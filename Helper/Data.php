@@ -1,4 +1,23 @@
 <?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EmailAttachments
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
 
 namespace Mageplaza\EmailAttachments\Helper;
 
@@ -37,14 +56,5 @@ class Data extends AbstractData
     public function getTaCFile($store = null)
     {
         return $this->getConfigGeneral('tac_file', $store);
-    }
-
-    /**
-     * @param null $store
-     * @return bool
-     */
-    public function isCompatibleWithPdfInvoice($store = null)
-    {
-        return $this->getConfigGeneral('compatible_with_pdf_invoice', $store);
     }
 }

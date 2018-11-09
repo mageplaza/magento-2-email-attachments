@@ -1,4 +1,23 @@
 <?php
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EmailAttachments
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
 
 namespace Mageplaza\EmailAttachments\Model;
 
@@ -55,6 +74,11 @@ class MailEvent
     public function dispatch(Message $message)
     {
         if ($templateVars = $this->mail->getTemplateVars()) {
+            $storeId = isset($templateVars['store']) ? $templateVars['store']->getId() : null;
+            if (!$this->dataHelper->isEnabled($storeId)) {
+                return;
+            }
+
             if ($emailType = $this->getEmailType($templateVars)) {
                 $this->eventManager->dispatch(
                     'mageplaza_emailattachments_' . $emailType, [$emailType => $templateVars[$emailType]]
