@@ -51,7 +51,7 @@ class Data extends AbstractData
 
     /**
      * @param null $store
-     * @return string
+     * @return bool
      */
     public function isEnabledAttachPdf($store = null)
     {
@@ -71,7 +71,7 @@ class Data extends AbstractData
 
     /**
      * @param null $store
-     * @return string
+     * @return bool
      */
     public function isEnabledAttachTac($store = null)
     {

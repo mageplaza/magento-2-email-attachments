@@ -92,11 +92,11 @@ class MailEvent
             }
 
             if ($emailType = $this->getEmailType($templateVars)) {
+                /** @var \Magento\Sales\Model\Order | \Magento\Sales\Model\Order\Invoice | \Magento\Sales\Model\Order\Shipment | \Magento\Sales\Model\Order\Creditmemo $obj */
                 $obj     = $templateVars[$emailType];
                 $tacPath = $this->dataHelper->getTacFile($storeId);
 
-                if ($this->dataHelper->isEnabledAttachPdf($storeId)
-                    && in_array($emailType, $this->dataHelper->getAttachPdf($storeId))) {
+                if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId))) {
                     $pdfModel = 'Magento\Sales\Model\Order\Pdf\\' . ucfirst($emailType);
 
                     /** @var \Zend_Pdf $pdf */
@@ -111,8 +111,7 @@ class MailEvent
                     );
                 }
 
-                if ($this->dataHelper->isEnabledAttachTac($storeId)
-                    && in_array($emailType, $this->dataHelper->getAttachTac($storeId)) && $tacPath) {
+                if (in_array($emailType, $this->dataHelper->getAttachTac($storeId)) && $tacPath) {
                     list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
 
                     $message->createAttachment(
