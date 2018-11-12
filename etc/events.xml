@@ -33,17 +33,4 @@
     <event name="email_creditmemo_set_template_vars_before">
         <observer name="mageplaza_emailattachments_creditmemo_observer" instance="Mageplaza\EmailAttachments\Observer\AbstractEmail"/>
     </event>
-
-    <event name="mageplaza_emailattachments_order">
-        <observer name="mageplaza_emailattachments_order_observer" instance="Mageplaza\EmailAttachments\Observer\OrderObserver"/>
-    </event>
-    <event name="mageplaza_emailattachments_invoice">
-        <observer name="mageplaza_emailattachments_invoice_observer" instance="Mageplaza\EmailAttachments\Observer\InvoiceObserver"/>
-    </event>
-    <event name="mageplaza_emailattachments_shipment">
-        <observer name="mageplaza_emailattachments_shipment_observer" instance="Mageplaza\EmailAttachments\Observer\ShipmentObserver"/>
-    </event>
-    <event name="mageplaza_emailattachments_creditmemo">
-        <observer name="mageplaza_emailattachments_creditmemo_observer" instance="Mageplaza\EmailAttachments\Observer\CreditmemoObserver"/>
-    </event>
 </config>

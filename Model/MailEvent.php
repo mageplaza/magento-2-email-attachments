@@ -21,12 +21,23 @@
 
 namespace Mageplaza\EmailAttachments\Model;
 
-use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Filesystem;
 use Magento\Framework\Mail\Message;
+use Magento\Framework\ObjectManagerInterface;
 use Mageplaza\EmailAttachments\Helper\Data;
 
 class MailEvent
 {
+    /**
+     * @var array
+     */
+    protected static $mimeTypes = [
+        'txt'  => 'text/plain',
+        'pdf'  => 'application/pdf',
+        'doc'  => 'application/msword',
+        'docx' => 'application/msword',
+    ];
 
     /**
      * @var Mail
@@ -39,37 +50,38 @@ class MailEvent
     private $dataHelper;
 
     /**
-     * @var ManagerInterface
+     * @var Filesystem
      */
-    private $eventManager;
+    private $filesystem;
 
     /**
-     * @var AttachmentContainer
+     * @var ObjectManagerInterface
      */
-    private $attachmentContainer;
+    private $objectManager;
 
     /**
      * MailEvent constructor.
      * @param Mail $mail
      * @param Data $dataHelper
-     * @param ManagerInterface $eventManager
-     * @param AttachmentContainer $attachmentContainer
+     * @param Filesystem $filesystem
+     * @param ObjectManagerInterface $objectManager
      */
     public function __construct(
         Mail $mail,
         Data $dataHelper,
-        ManagerInterface $eventManager,
-        AttachmentContainer $attachmentContainer
+        Filesystem $filesystem,
+        ObjectManagerInterface $objectManager
     )
     {
-        $this->mail                = $mail;
-        $this->dataHelper          = $dataHelper;
-        $this->eventManager        = $eventManager;
-        $this->attachmentContainer = $attachmentContainer;
+        $this->mail          = $mail;
+        $this->dataHelper    = $dataHelper;
+        $this->filesystem    = $filesystem;
+        $this->objectManager = $objectManager;
     }
 
     /**
      * @param Message $message
+     * @throws \Zend_Pdf_Exception
      */
     public function dispatch(Message $message)
     {
@@ -80,23 +92,37 @@ class MailEvent
             }
 
             if ($emailType = $this->getEmailType($templateVars)) {
-                $this->eventManager->dispatch(
-                    'mageplaza_emailattachments_' . $emailType, [$emailType => $templateVars[$emailType]]
-                );
+                $obj     = $templateVars[$emailType];
+                $tacPath = $this->dataHelper->getTaCFile($storeId);
+
+                if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId))) {
+                    $pdfModel = 'Magento\Sales\Model\Order\Pdf\\' . ucfirst($emailType);
+
+                    /** @var \Zend_Pdf $pdf */
+                    $pdf = $this->objectManager->create($pdfModel)->getPdf([$obj]);
+
+                    $message->createAttachment(
+                        $pdf->render(),
+                        'application/pdf',
+                        \Zend_Mime::DISPOSITION_ATTACHMENT,
+                        \Zend_Mime::ENCODING_BASE64,
+                        $emailType . $obj->getIncrementId() . '.pdf'
+                    );
+                }
+
+                if (in_array($emailType, $this->dataHelper->getAttachTaC($storeId)) && $tacPath) {
+                    list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
+
+                    $message->createAttachment(
+                        file_get_contents($filePath),
+                        $mimeType,
+                        \Zend_Mime::DISPOSITION_ATTACHMENT,
+                        \Zend_Mime::ENCODING_BASE64,
+                        'terms_and_conditions.' . $ext
+                    );
+                }
             }
 
-            /** @var Attachment $attachment */
-            foreach ($this->attachmentContainer->getAttachments() as $attachment) {
-                $message->createAttachment(
-                    $attachment->getContent(),
-                    $attachment->getMimeType(),
-                    $attachment->getDisposition(),
-                    $attachment->getEncoding(),
-                    $attachment->getFilename()
-                );
-            }
-
-            $this->attachmentContainer->resetAttachments();
             $this->mail->setTemplateVars(null);
         }
     }
@@ -107,22 +133,28 @@ class MailEvent
      */
     private function getEmailType($templateVars)
     {
-        if (isset($templateVars['invoice'])) {
-            return 'invoice';
-        }
+        $emailTypes = ['invoice', 'shipment', 'creditmemo', 'order'];
 
-        if (isset($templateVars['shipment'])) {
-            return 'shipment';
-        }
-
-        if (isset($templateVars['creditmemo'])) {
-            return 'creditmemo';
-        }
-
-        if (isset($templateVars['order'])) {
-            return 'order';
+        foreach ($emailTypes as $emailType) {
+            if (isset($templateVars[$emailType])) {
+                return $emailType;
+            }
         }
 
         return false;
+    }
+
+    /**
+     * @param $tacPath
+     * @return array
+     */
+    private function getTacFile($tacPath)
+    {
+        $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        $filePath       = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacPath);
+        $ext            = substr($filePath, strrpos($filePath, '.') + 1);
+        $mimeType       = self::$mimeTypes[$ext];
+
+        return [$filePath, $ext, $mimeType];
     }
 }

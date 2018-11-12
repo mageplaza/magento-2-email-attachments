@@ -41,6 +41,13 @@ class TransportFactory
         $this->mailEvent = $mailEvent;
     }
 
+    /**
+     * @param \Magento\Framework\Mail\TransportInterfaceFactory $subject
+     * @param \Closure $proceed
+     * @param array $data
+     * @return mixed
+     * @throws \Zend_Pdf_Exception
+     */
     public function aroundCreate(
         \Magento\Framework\Mail\TransportInterfaceFactory $subject,
         \Closure $proceed,
