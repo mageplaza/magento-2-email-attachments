@@ -79,11 +79,10 @@ abstract class AbstractObserver implements \Magento\Framework\Event\ObserverInte
         $this->attachmentContainer = $attachmentContainer;
     }
 
-    public function getTacFile($obj)
+    public function getTacFile($tacPath)
     {
-        $tacFile        = $this->dataHelper->getTaCFile($obj->getStoreId());
         $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
-        $filePath       = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacFile);
+        $filePath       = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacPath);
         $ext            = substr($filePath, strrpos($filePath, '.') + 1);
         $mimeType       = self::$mimeTypes[$ext];
 

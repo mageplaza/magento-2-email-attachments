@@ -34,9 +34,11 @@ class OrderObserver extends AbstractObserver
         $obj = $observer->getOrder();
 
         $filename = AttachTaC::ORDER . $obj->getIncrementId() . '.';
+        $storeId  = $obj->getStoreId();
+        $tacPath  = $this->dataHelper->getTaCFile($storeId);
 
-        if (in_array(AttachTaC::ORDER, $this->dataHelper->getAttachTaC($obj->getStoreId()))) {
-            list($filePath, $ext, $mimeType) = $this->getTacFile($obj);
+        if (in_array(AttachTaC::ORDER, $this->dataHelper->getAttachTaC($storeId)) && $tacPath) {
+            list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
 
             $this->attachmentContainer->addAttachment(file_get_contents($filePath), $filename . $ext, $mimeType);
         }

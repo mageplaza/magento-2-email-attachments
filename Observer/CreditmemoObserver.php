@@ -35,16 +35,18 @@ class CreditmemoObserver extends AbstractObserver
         $obj = $observer->getCreditmemo();
 
         $filename = AttachPdf::CREDIT_MEMO . $obj->getIncrementId() . '.';
+        $storeId  = $obj->getStoreId();
+        $tacPath  = $this->dataHelper->getTaCFile($storeId);
 
-        if (in_array(AttachPdf::CREDIT_MEMO, $this->dataHelper->getAttachPdf($obj->getStoreId()))) {
+        if (in_array(AttachPdf::CREDIT_MEMO, $this->dataHelper->getAttachPdf($storeId))) {
             /** @var \Zend_Pdf $pdf */
             $pdf = $this->objectManager->create('Magento\Sales\Model\Order\Pdf\Creditmemo')->getPdf([$obj]);
 
             $this->attachmentContainer->addAttachment($pdf->render(), $filename . 'pdf', 'application/pdf');
         }
 
-        if (in_array(AttachPdf::CREDIT_MEMO, $this->dataHelper->getAttachTaC($obj->getStoreId()))) {
-            list($filePath, $ext, $mimeType) = $this->getTacFile($obj);
+        if (in_array(AttachPdf::CREDIT_MEMO, $this->dataHelper->getAttachTaC($storeId)) && $tacPath) {
+            list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
 
             $this->attachmentContainer->addAttachment(file_get_contents($filePath), $filename . $ext, $mimeType);
         }
