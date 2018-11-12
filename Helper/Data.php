@@ -31,6 +31,37 @@ class Data extends AbstractData
      * @param null $store
      * @return array
      */
+    public function getCcTo($store = null)
+    {
+        $ccTo = $this->getConfigGeneral('cc_to', $store);
+
+        return $ccTo ? explode(',', $ccTo) : [];
+    }
+
+    /**
+     * @param null $store
+     * @return array
+     */
+    public function getBccTo($store = null)
+    {
+        $bccTo = $this->getConfigGeneral('bcc_to', $store);
+
+        return $bccTo ? explode(',', $bccTo) : [];
+    }
+
+    /**
+     * @param null $store
+     * @return string
+     */
+    public function isEnabledAttachPdf($store = null)
+    {
+        return !!$this->getConfigGeneral('is_enabled_attach_pdf', $store);
+    }
+
+    /**
+     * @param null $store
+     * @return array
+     */
     public function getAttachPdf($store = null)
     {
         $attachPdf = $this->getConfigGeneral('attach_pdf', $store);
@@ -40,9 +71,18 @@ class Data extends AbstractData
 
     /**
      * @param null $store
+     * @return string
+     */
+    public function isEnabledAttachTac($store = null)
+    {
+        return !!$this->getConfigGeneral('is_enabled_attach_tac', $store);
+    }
+
+    /**
+     * @param null $store
      * @return array
      */
-    public function getAttachTaC($store = null)
+    public function getAttachTac($store = null)
     {
         $attachTaC = $this->getConfigGeneral('attach_tac', $store);
 
@@ -53,7 +93,7 @@ class Data extends AbstractData
      * @param null $store
      * @return string
      */
-    public function getTaCFile($store = null)
+    public function getTacFile($store = null)
     {
         return $this->getConfigGeneral('tac_file', $store);
     }

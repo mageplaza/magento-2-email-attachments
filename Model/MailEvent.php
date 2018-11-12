@@ -93,9 +93,10 @@ class MailEvent
 
             if ($emailType = $this->getEmailType($templateVars)) {
                 $obj     = $templateVars[$emailType];
-                $tacPath = $this->dataHelper->getTaCFile($storeId);
+                $tacPath = $this->dataHelper->getTacFile($storeId);
 
-                if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId))) {
+                if ($this->dataHelper->isEnabledAttachPdf($storeId)
+                    && in_array($emailType, $this->dataHelper->getAttachPdf($storeId))) {
                     $pdfModel = 'Magento\Sales\Model\Order\Pdf\\' . ucfirst($emailType);
 
                     /** @var \Zend_Pdf $pdf */
@@ -110,7 +111,8 @@ class MailEvent
                     );
                 }
 
-                if (in_array($emailType, $this->dataHelper->getAttachTaC($storeId)) && $tacPath) {
+                if ($this->dataHelper->isEnabledAttachTac($storeId)
+                    && in_array($emailType, $this->dataHelper->getAttachTac($storeId)) && $tacPath) {
                     list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
 
                     $message->createAttachment(
@@ -120,6 +122,14 @@ class MailEvent
                         \Zend_Mime::ENCODING_BASE64,
                         'terms_and_conditions.' . $ext
                     );
+                }
+
+                foreach ($this->dataHelper->getCcTo($storeId) as $item) {
+                    $message->addCc(trim($item));
+                }
+
+                foreach ($this->dataHelper->getBccTo($storeId) as $item) {
+                    $message->addBcc(trim($item));
                 }
             }
 
