@@ -49,7 +49,7 @@
                     <label>Attach PDF file for</label>
                     <source_model>Mageplaza\EmailAttachments\Model\Config\Source\AttachPdf</source_model>
                     <can_be_empty>1</can_be_empty>
-                    <comment>It will attach billing documents generated to emails.</comment>
+                    <comment>PDF files for the above billing document(s) will be generated and attached to emails.</comment>
                     <depends>
                         <field id="is_enabled_attach_pdf">1</field>
                     </depends>
@@ -62,7 +62,7 @@
                     <label>Attach Terms and Conditions to</label>
                     <source_model>Mageplaza\EmailAttachments\Model\Config\Source\AttachTaC</source_model>
                     <can_be_empty>1</can_be_empty>
-                    <comment>It will attach Terms and Conditions to emails.</comment>
+                    <comment>'Terms and Conditions' will be attached to the above billing document(s) as a file.</comment>
                     <depends>
                         <field id="is_enabled_attach_tac">1</field>
                     </depends>
