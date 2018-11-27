@@ -21,9 +21,11 @@
 
 namespace Mageplaza\EmailAttachments\Observer;
 
+use Magento\Framework\Event\Observer;
+use Magento\Framework\Event\ObserverInterface;
 use Mageplaza\EmailAttachments\Model\Mail;
 
-class AbstractEmail implements \Magento\Framework\Event\ObserverInterface
+class AbstractEmail implements ObserverInterface
 {
     /**
      * @var Mail
@@ -32,19 +34,18 @@ class AbstractEmail implements \Magento\Framework\Event\ObserverInterface
 
     /**
      * TransportBuilder constructor.
+     *
      * @param Mail $mail
      */
-    public function __construct(
-        Mail $mail
-    )
+    public function __construct(Mail $mail)
     {
         $this->mail = $mail;
     }
 
     /**
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         $this->mail->setTemplateVars($observer->getTransport());
     }

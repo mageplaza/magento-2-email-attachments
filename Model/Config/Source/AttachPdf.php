@@ -21,7 +21,9 @@
 
 namespace Mageplaza\EmailAttachments\Model\Config\Source;
 
-class AttachPdf implements \Magento\Framework\Option\ArrayInterface
+use Magento\Framework\Option\ArrayInterface;
+
+class AttachPdf implements ArrayInterface
 {
     const INVOICE     = 'invoice';
     const SHIPMENT    = 'shipment';

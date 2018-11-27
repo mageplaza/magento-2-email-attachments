@@ -21,7 +21,9 @@
 
 namespace Mageplaza\EmailAttachments\Model\Config\Source;
 
-class AttachTaC implements \Magento\Framework\Option\ArrayInterface
+use Magento\Framework\Option\ArrayInterface;
+
+class AttachTaC implements ArrayInterface
 {
     const ORDER       = 'order';
     const INVOICE     = 'invoice';

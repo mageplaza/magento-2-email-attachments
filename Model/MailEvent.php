@@ -61,6 +61,7 @@ class MailEvent
 
     /**
      * MailEvent constructor.
+     *
      * @param Mail $mail
      * @param Data $dataHelper
      * @param Filesystem $filesystem
@@ -81,63 +82,49 @@ class MailEvent
 
     /**
      * @param Message $message
+     *
      * @throws \Zend_Pdf_Exception
      */
     public function dispatch(Message $message)
     {
-        if ($templateVars = $this->mail->getTemplateVars()) {
-            $storeId = isset($templateVars['store']) ? $templateVars['store']->getId() : null;
-            if (!$this->dataHelper->isEnabled($storeId)) {
-                return;
-            }
-
-            if ($emailType = $this->getEmailType($templateVars)) {
-                /** @var \Magento\Sales\Model\Order | \Magento\Sales\Model\Order\Invoice | \Magento\Sales\Model\Order\Shipment | \Magento\Sales\Model\Order\Creditmemo $obj */
-                $obj     = $templateVars[$emailType];
-                $tacPath = $this->dataHelper->getTacFile($storeId);
-
-                if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId))) {
-                    $pdfModel = 'Magento\Sales\Model\Order\Pdf\\' . ucfirst($emailType);
-
-                    /** @var \Zend_Pdf $pdf */
-                    $pdf = $this->objectManager->create($pdfModel)->getPdf([$obj]);
-
-                    $message->createAttachment(
-                        $pdf->render(),
-                        'application/pdf',
-                        \Zend_Mime::DISPOSITION_ATTACHMENT,
-                        \Zend_Mime::ENCODING_BASE64,
-                        $emailType . $obj->getIncrementId() . '.pdf'
-                    );
-                }
-
-                if (in_array($emailType, $this->dataHelper->getAttachTac($storeId)) && $tacPath) {
-                    list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
-
-                    $message->createAttachment(
-                        file_get_contents($filePath),
-                        $mimeType,
-                        \Zend_Mime::DISPOSITION_ATTACHMENT,
-                        \Zend_Mime::ENCODING_BASE64,
-                        'terms_and_conditions.' . $ext
-                    );
-                }
-
-                foreach ($this->dataHelper->getCcTo($storeId) as $item) {
-                    $message->addCc(trim($item));
-                }
-
-                foreach ($this->dataHelper->getBccTo($storeId) as $item) {
-                    $message->addBcc(trim($item));
-                }
-            }
-
-            $this->mail->setTemplateVars(null);
+        $templateVars = $this->mail->getTemplateVars();
+        if (!$templateVars) {
+            return;
         }
+        $store   = $templateVars['store'];
+        $storeId = isset($store) ? $store->getId() : null;
+
+        if (!$this->dataHelper->isEnabled($storeId)) {
+            return;
+        }
+
+        if ($emailType = $this->getEmailType($templateVars)) {
+            /** @var \Magento\Sales\Model\Order|\Magento\Sales\Model\Order\Invoice|\Magento\Sales\Model\Order\Shipment|\Magento\Sales\Model\Order\Creditmemo $obj */
+            $obj = $templateVars[$emailType];
+            if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId))) {
+                $this->setPdfAttachment($emailType, $message, $obj);
+            }
+
+            $tacPath = $this->dataHelper->getTacFile($storeId);
+            if (in_array($emailType, $this->dataHelper->getAttachTac($storeId)) && $tacPath) {
+                $this->setTACAttachment($message, $tacPath);
+            }
+
+            foreach ($this->dataHelper->getCcTo($storeId) as $email) {
+                $message->addCc(trim($email));
+            }
+
+            foreach ($this->dataHelper->getBccTo($storeId) as $email) {
+                $message->addBcc(trim($email));
+            }
+        }
+
+        $this->mail->setTemplateVars(null);
     }
 
     /**
      * @param $templateVars
+     *
      * @return bool|string
      */
     private function getEmailType($templateVars)
@@ -154,7 +141,46 @@ class MailEvent
     }
 
     /**
-     * @param $tacPath
+     * @param string $emailType
+     * @param Message $message
+     * @param $obj
+     *
+     * @throws \Zend_Pdf_Exception
+     */
+    private function setPdfAttachment($emailType, Message $message, $obj)
+    {
+        $pdfModel = 'Magento\Sales\Model\Order\Pdf\\' . ucfirst($emailType);
+        /** @var \Zend_Pdf $pdf */
+        $pdf = $this->objectManager->create($pdfModel)->getPdf([$obj]);
+
+        $message->createAttachment(
+            $pdf->render(),
+            'application/pdf',
+            \Zend_Mime::DISPOSITION_ATTACHMENT,
+            \Zend_Mime::ENCODING_BASE64,
+            $emailType . $obj->getIncrementId() . '.pdf'
+        );
+    }
+
+    /**
+     * @param Message $message
+     * @param string $tacPath
+     */
+    private function setTACAttachment(Message $message, $tacPath)
+    {
+        list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
+        $message->createAttachment(
+            file_get_contents($filePath),
+            $mimeType,
+            \Zend_Mime::DISPOSITION_ATTACHMENT,
+            \Zend_Mime::ENCODING_BASE64,
+            'terms_and_conditions.' . $ext
+        );
+    }
+
+    /**
+     * @param string $tacPath
+     *
      * @return array
      */
     private function getTacFile($tacPath)

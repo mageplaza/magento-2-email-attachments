@@ -29,28 +29,31 @@ class Data extends AbstractData
 
     /**
      * @param null $store
+     *
      * @return array
      */
     public function getCcTo($store = null)
     {
         $ccTo = $this->getConfigGeneral('cc_to', $store);
 
-        return $ccTo ? explode(',', $ccTo) : [];
+        return $ccTo ? explode(',', trim($ccTo)) : [];
     }
 
     /**
      * @param null $store
+     *
      * @return array
      */
     public function getBccTo($store = null)
     {
         $bccTo = $this->getConfigGeneral('bcc_to', $store);
 
-        return $bccTo ? explode(',', $bccTo) : [];
+        return $bccTo ? explode(',', trim($bccTo)) : [];
     }
 
     /**
      * @param null $store
+     *
      * @return bool
      */
     public function isEnabledAttachPdf($store = null)
@@ -60,6 +63,7 @@ class Data extends AbstractData
 
     /**
      * @param null $store
+     *
      * @return array
      */
     public function getAttachPdf($store = null)
@@ -71,6 +75,7 @@ class Data extends AbstractData
 
     /**
      * @param null $store
+     *
      * @return bool
      */
     public function isEnabledAttachTac($store = null)
@@ -80,6 +85,7 @@ class Data extends AbstractData
 
     /**
      * @param null $store
+     *
      * @return array
      */
     public function getAttachTac($store = null)
@@ -91,6 +97,7 @@ class Data extends AbstractData
 
     /**
      * @param null $store
+     *
      * @return string
      */
     public function getTacFile($store = null)

@@ -21,7 +21,9 @@
 
 namespace Mageplaza\EmailAttachments\Model\Config\Backend;
 
-class TaCFile extends \Magento\Config\Model\Config\Backend\File
+use Magento\Config\Model\Config\Backend\File;
+
+class TaCFile extends File
 {
     /**
      * The tail part of directory path for uploading

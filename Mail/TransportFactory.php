@@ -21,6 +21,7 @@
 
 namespace Mageplaza\EmailAttachments\Mail;
 
+use Magento\Framework\Mail\TransportInterfaceFactory;
 use Mageplaza\EmailAttachments\Model\MailEvent;
 
 class TransportFactory
@@ -32,24 +33,24 @@ class TransportFactory
 
     /**
      * TransportFactory constructor.
+     *
      * @param MailEvent $mailEvent
      */
-    public function __construct(
-        MailEvent $mailEvent
-    )
+    public function __construct(MailEvent $mailEvent)
     {
         $this->mailEvent = $mailEvent;
     }
 
     /**
-     * @param \Magento\Framework\Mail\TransportInterfaceFactory $subject
+     * @param TransportInterfaceFactory $subject
      * @param \Closure $proceed
      * @param array $data
+     *
      * @return mixed
      * @throws \Zend_Pdf_Exception
      */
     public function aroundCreate(
-        \Magento\Framework\Mail\TransportInterfaceFactory $subject,
+        TransportInterfaceFactory $subject,
         \Closure $proceed,
         array $data = []
     )
