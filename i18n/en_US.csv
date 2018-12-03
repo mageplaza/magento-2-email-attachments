@@ -1,0 +1,19 @@
+Invoice,Invoice
+Shipment,Shipment
+"Credit Memo","Credit Memo"
+Order,Order
+"Email Attachments","Email Attachments"
+"General Configuration","General Configuration"
+Enable,Enable
+"Select <strong>Yes</strong> to enable the module.","Select <strong>Yes</strong> to enable the module."
+"CC to Emails","CC to Emails"
+Comma-separated,Comma-separated
+"BCC to Emails","BCC to Emails"
+"Enable Attach PDF","Enable Attach PDF"
+"Attach PDF file for","Attach PDF file for"
+"PDF files for the above billing document(s) will be generated and attached to emails.","PDF files for the above billing document(s) will be generated and attached to emails."
+"Enable Attach Terms and Conditions","Enable Attach Terms and Conditions"
+"Attach Terms and Conditions to","Attach Terms and Conditions to"
+"'Terms and Conditions' will be attached to the above billing document(s) as a file.","'Terms and Conditions' will be attached to the above billing document(s) as a file."
+"Terms and Conditions file","Terms and Conditions file"
+"Allowed upload file types: .pdf, .doc, .docx, .txt","Allowed upload file types: .pdf, .doc, .docx, .txt"

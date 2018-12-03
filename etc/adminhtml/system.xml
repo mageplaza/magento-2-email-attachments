@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Mageplaza
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Mageplaza.com license that is
+ * available through the world-wide-web at this URL:
+ * https://www.mageplaza.com/LICENSE.txt
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category    Mageplaza
+ * @package     Mageplaza_EmailAttachments
+ * @copyright   Copyright (c) Mageplaza (https://www.mageplaza.com/)
+ * @license     https://www.mageplaza.com/LICENSE.txt
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="mp_email_attachments" translate="label comment" sortOrder="50" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Email Attachments</label>
+            <tab>mageplaza</tab>
+            <resource>Mageplaza_EmailAttachments::configuration</resource>
+            <group id="general" translate="label comment" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Configuration</label>
+                <field id="enabled" translate="label comment" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Select <strong>Yes</strong> to enable the module.]]></comment>
+                </field>
+                <field id="cc_to" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CC to Emails</label>
+                    <comment>Comma-separated</comment>
+                </field>
+                <field id="bcc_to" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>BCC to Emails</label>
+                    <comment>Comma-separated</comment>
+                </field>
+                <field id="is_enabled_attach_pdf" translate="label" sortOrder="40" type="select" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Attach PDF</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="attach_pdf" translate="label comment" type="multiselect" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Attach PDF file for</label>
+                    <source_model>Mageplaza\EmailAttachments\Model\Config\Source\AttachPdf</source_model>
+                    <can_be_empty>1</can_be_empty>
+                    <comment>PDF files for the above billing document(s) will be generated and attached to emails.</comment>
+                    <depends>
+                        <field id="is_enabled_attach_pdf">1</field>
+                    </depends>
+                </field>
+                <field id="is_enabled_attach_tac" translate="label" sortOrder="60" type="select" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Enable Attach Terms and Conditions</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="attach_tac" translate="label comment" type="multiselect" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Attach Terms and Conditions to</label>
+                    <source_model>Mageplaza\EmailAttachments\Model\Config\Source\AttachTaC</source_model>
+                    <can_be_empty>1</can_be_empty>
+                    <comment>'Terms and Conditions' will be attached to the above billing document(s) as a file.</comment>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_file" translate="label comment" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions file</label>
+                    <backend_model>Mageplaza\EmailAttachments\Model\Config\Backend\TaCFile</backend_model>
+                    <comment>Allowed upload file types: .pdf, .doc, .docx, .txt</comment>
+                    <base_url type="media" scope_info="1">mageplaza/email_attachments</base_url>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

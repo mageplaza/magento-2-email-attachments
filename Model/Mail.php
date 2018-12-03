@@ -19,8 +19,30 @@
  * @license     https://www.mageplaza.com/LICENSE.txt
  */
 
-\Magento\Framework\Component\ComponentRegistrar::register(
-    \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'Mageplaza_EmailAttachments',
-    __DIR__
-);
+namespace Mageplaza\EmailAttachments\Model;
+
+class Mail
+{
+    /**
+     * @var array
+     */
+    private $templateVars;
+
+
+    /**
+     * @param array $templateVars
+     */
+    public function setTemplateVars($templateVars)
+    {
+        $this->templateVars = $templateVars;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getTemplateVars()
+    {
+        return $this->templateVars;
+    }
+}
