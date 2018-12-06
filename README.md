@@ -6,7 +6,7 @@
 
 - [Installation guide](https://www.mageplaza.com/install-magento-2-extension/)
 - [User guide](https://docs.mageplaza.com/email-attachments/index.html)
-- [Introduction page](http://www.mageplaza.com/magento-2-email-attachments/)
+- [Introduction page](https://www.mageplaza.com/magento-2-email-attachments/)
 - [Contribute on Github](https://github.com/mageplaza/magento-2-email-attachments)
 - [Get Support](https://github.com/mageplaza/magento-2-email-attachments/issues)
 
