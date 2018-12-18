@@ -23,6 +23,10 @@ namespace Mageplaza\EmailAttachments\Model\Config\Backend;
 
 use Magento\Config\Model\Config\Backend\File;
 
+/**
+ * Class TaCFile
+ * @package Mageplaza\EmailAttachments\Model\Config\Backend
+ */
 class TaCFile extends File
 {
     /**

@@ -21,13 +21,16 @@
 
 namespace Mageplaza\EmailAttachments\Model;
 
+/**
+ * Class Mail
+ * @package Mageplaza\EmailAttachments\Model
+ */
 class Mail
 {
     /**
      * @var array
      */
     private $templateVars;
-
 
     /**
      * @param array $templateVars
@@ -36,7 +39,6 @@ class Mail
     {
         $this->templateVars = $templateVars;
     }
-
 
     /**
      * @return mixed

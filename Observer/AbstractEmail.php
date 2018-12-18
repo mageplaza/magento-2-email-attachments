@@ -25,6 +25,10 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Mageplaza\EmailAttachments\Model\Mail;
 
+/**
+ * Class AbstractEmail
+ * @package Mageplaza\EmailAttachments\Observer
+ */
 class AbstractEmail implements ObserverInterface
 {
     /**

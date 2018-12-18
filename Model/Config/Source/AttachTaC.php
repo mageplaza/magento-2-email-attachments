@@ -23,6 +23,10 @@ namespace Mageplaza\EmailAttachments\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
 
+/**
+ * Class AttachTaC
+ * @package Mageplaza\EmailAttachments\Model\Config\Source
+ */
 class AttachTaC implements ArrayInterface
 {
     const ORDER       = 'order';

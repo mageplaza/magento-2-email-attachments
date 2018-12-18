@@ -27,6 +27,10 @@ use Magento\Framework\Mail\Message;
 use Magento\Framework\ObjectManagerInterface;
 use Mageplaza\EmailAttachments\Helper\Data;
 
+/**
+ * Class MailEvent
+ * @package Mageplaza\EmailAttachments\Model
+ */
 class MailEvent
 {
     /**

@@ -23,6 +23,10 @@ namespace Mageplaza\EmailAttachments\Helper;
 
 use Mageplaza\Core\Helper\AbstractData;
 
+/**
+ * Class Data
+ * @package Mageplaza\EmailAttachments\Helper
+ */
 class Data extends AbstractData
 {
     const CONFIG_MODULE_PATH = 'mp_email_attachments';

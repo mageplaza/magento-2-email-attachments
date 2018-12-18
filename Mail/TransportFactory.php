@@ -24,6 +24,10 @@ namespace Mageplaza\EmailAttachments\Mail;
 use Magento\Framework\Mail\TransportInterfaceFactory;
 use Mageplaza\EmailAttachments\Model\MailEvent;
 
+/**
+ * Class TransportFactory
+ * @package Mageplaza\EmailAttachments\Mail
+ */
 class TransportFactory
 {
     /**
