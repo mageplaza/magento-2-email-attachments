@@ -23,7 +23,7 @@ namespace Mageplaza\EmailAttachments\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
-use Magento\Framework\Mail\Message;
+use Mageplaza\EmailAttachments\Mail\Message;
 use Magento\Framework\ObjectManagerInterface;
 use Mageplaza\EmailAttachments\Helper\Data;
 
@@ -106,12 +106,19 @@ class MailEvent
             /** @var \Magento\Sales\Model\Order|\Magento\Sales\Model\Order\Invoice|\Magento\Sales\Model\Order\Shipment|\Magento\Sales\Model\Order\Creditmemo $obj */
             $obj = $templateVars[$emailType];
             if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId))) {
-                $this->setPdfAttachment($emailType, $message, $obj);
+                $pdfAttachment = $this->setPdfAttachment($emailType, $message, $obj);
+
+                if($this->dataHelper->versionCompare("2.3")){
+                    $message->setBodyAttachment($pdfAttachment->getContent(), $pdfAttachment->filename, $pdfAttachment->type, \Zend_Mime::ENCODING_BASE64);
+                }
             }
 
             $tacPath = $this->dataHelper->getTacFile($storeId);
             if (in_array($emailType, $this->dataHelper->getAttachTac($storeId)) && $tacPath) {
-                $this->setTACAttachment($message, $tacPath);
+                $TACAttachment = $this->setTACAttachment($message, $tacPath);
+                if($this->dataHelper->versionCompare("2.3")){
+                    $message->setBodyAttachment($TACAttachment->getContent(), $TACAttachment->filename, $TACAttachment->type, \Zend_Mime::ENCODING_BASE64);
+                }
             }
 
             foreach ($this->dataHelper->getCcTo($storeId) as $email) {
@@ -121,6 +128,7 @@ class MailEvent
             foreach ($this->dataHelper->getBccTo($storeId) as $email) {
                 $message->addBcc(trim($email));
             }
+            $message->setPartsToBody();
         }
 
         $this->mail->setTemplateVars(null);
@@ -157,13 +165,23 @@ class MailEvent
         /** @var \Zend_Pdf $pdf */
         $pdf = $this->objectManager->create($pdfModel)->getPdf([$obj]);
 
-        $message->createAttachment(
-            $pdf->render(),
-            'application/pdf',
-            \Zend_Mime::DISPOSITION_ATTACHMENT,
-            \Zend_Mime::ENCODING_BASE64,
-            $emailType . $obj->getIncrementId() . '.pdf'
-        );
+        if($this->dataHelper->versionCompare("2.3")) {
+            $attachment = new \Zend_Mime_Part($pdf->render());
+            $attachment->type = 'application/pdf';
+            $attachment->disposition =  \Zend_Mime::DISPOSITION_ATTACHMENT;
+            $attachment->filename = $emailType . $obj->getIncrementId() . '.pdf';
+
+            return $attachment;
+        }
+        else{
+            $message->createAttachment(
+                $pdf->render(),
+                'application/pdf',
+                \Zend_Mime::DISPOSITION_ATTACHMENT,
+                \Zend_Mime::ENCODING_BASE64,
+                $emailType . $obj->getIncrementId() . '.pdf'
+            );
+        }
     }
 
     /**
@@ -173,13 +191,22 @@ class MailEvent
     private function setTACAttachment(Message $message, $tacPath)
     {
         list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
-        $message->createAttachment(
-            file_get_contents($filePath),
-            $mimeType,
-            \Zend_Mime::DISPOSITION_ATTACHMENT,
-            \Zend_Mime::ENCODING_BASE64,
-            'terms_and_conditions.' . $ext
-        );
+        if($this->dataHelper->versionCompare("2.3")) {
+            $attachment = new \Zend_Mime_Part(file_get_contents($filePath));
+            $attachment->type = $mimeType;
+            $attachment->disposition =  \Zend_Mime::DISPOSITION_ATTACHMENT;
+            $attachment->filename = 'terms_and_conditions.'. $ext;
+            return $attachment;
+        }
+        else{
+            $message->createAttachment(
+                file_get_contents($filePath),
+                $mimeType,
+                \Zend_Mime::DISPOSITION_ATTACHMENT,
+                \Zend_Mime::ENCODING_BASE64,
+                'terms_and_conditions.' . $ext
+            );
+        }
     }
 
     /**
