@@ -36,7 +36,7 @@ A: Yes, Email Attachments are properly compatible with [Mageplaza SMTP](https://
 
 A: It is possible that emails sent from default Magento 2 server are judged as unregistered emails, which means the reputation for these emails is pretty low and they will be classified as spam trashes. Using Mageplaza SMTP module additionally will help you increase almost 99% possibility that your emails and attachments approach customers successfully.
 
-## 3. How to install Better Popup extension for Magento 2
+## 3. How to install Magento 2 Email Attachment
 
 Install via composer (recommend)
 
@@ -48,37 +48,37 @@ php bin/magento setup:upgrade
 php bin/magento setup:static-content:deploy
 ```
 
-## 4. Highlight Features
+## 4. Mageplaza Email Attachments Highlight Features
 
-### PDF billing documents automatic attachments
+### Attack PDF billing documents to Invoice Email
 
 Email Attachments from Mageplaza supports the store owner in attaching important PDF billing documents as Invoice, Credit Memo, and Shipment to the sale emails automatically. PDF files for these billing documents are created and attached systematically to emails sent to recipients.
 
-![Imgur](https://i.imgur.com/0nGnkcb.png)
+![Magento 2 attach pdf to invoice email](https://i.imgur.com/0nGnkcb.png)
 
 ### Enable attaching Terms and Conditions
 
 Magento 2 Email Attachments also enables Terms and Conditions to be attached in sent emails. In another word, after a customer creates an order, an order confirmation email along with Terms and Conditions file will be sent. This process keeps customers being noticed about the store’s policy concisely and evidently.
 
-![Imgur](https://i.imgur.com/3I7X6bi.png)
+![Magento 2 send email with attachment](https://i.imgur.com/3I7X6bi.png)
 
 ### Various available format types
 
 There are 4 Terms and Conditions file types, which are .pdf, .doc, .txt and .doc. The administrator can flexibly upload appropriate types for specific purposes or specific target audiences when attaching to emails. 
 
-![Imgur](https://i.imgur.com/HtETMdA.png)
+![magento 2 email attachments](https://i.imgur.com/HtETMdA.png)
 
 ### Multi-recipient attachments 
 
 The extension includes CC and BCC, which assists the store owner to send copies of the emails to additional recipients. CC addresses are transparent, meanwhile, BCC conceals the recipients list to all. The store owner can make use of this feature in specific situations and requirements.
 
-![Imgur](https://i.imgur.com/DUzL5sZ.png?1)
+![magento 2 order email attachment](https://i.imgur.com/DUzL5sZ.png?1)
 
 ## 5. More features
 
 #### Extension compatibility 
 
-Email Attachments Extension is compatible and totally works well with Mageplaza PDF Invoice and SMTP. These three extensions support each others and help you reach customer efficiently, say goodbye to the spam box.
+**Mageplaza Email Attachments Extension** is compatible and totally works well with **[Mageplaza PDF Invoice](https://www.mageplaza.com/magento-2-pdf-invoice-extension/)** and **[SMTP](https://github.com/mageplaza/magento-2-smtp)**. These three extensions support each others and help you reach customer efficiently, say goodbye to the spam box.
 
 ## 6. Full Features List 
 
@@ -98,15 +98,15 @@ Email Attachments Extension is compatible and totally works well with Mageplaza 
 - Get store’s order informations such as Invoice, Shipment, Credit Memo adequately and concisely 
 - Possible to follow necessary purchasing information easily via emails
 
-## 7. User Guide
+## 7. Email Attachment User Guide
 
 Login to the `Magento Admin`, navigate to `Store > Configuration > Mageplaza > Email Attachments`
 
-![Imgur](https://i.imgur.com/VXNwjRa.gif)
+![Email Attachment User Guide](https://i.imgur.com/VXNwjRa.gif)
 
 ### General Configuration
 
-![Imgur](https://i.imgur.com/hPrIvIl.png)
+![Magento 2 Email Attachment General Configuration](https://i.imgur.com/hPrIvIl.png)
 
 - **Enable**: Select `Yes` to enable the module, and `No` to disable.
 - **CC to emails**:
@@ -121,7 +121,7 @@ Login to the `Magento Admin`, navigate to `Store > Configuration > Mageplaza > E
     - Credit memo
     - Shipment
 
-![Imgur](https://i.imgur.com/n0g25LC.png)
+![Magento 2 Email Attachment General Configuration](https://i.imgur.com/n0g25LC.png)
 
 - **Enable Attach Terms and Conditions**: Select `Yes` to display Attach Terms and Conditions in emails. Right here 2 more fields can be displayed:
   - **Attach Terms and Conditions**: Select the section which will contain Attach Terms and Conditions in emails. Terms and Conditions will be attached to the above billing document(s) as a file. Display in:
@@ -134,6 +134,27 @@ Login to the `Magento Admin`, navigate to `Store > Configuration > Mageplaza > E
     - Possible file formats: .pdf, .doc, .docx, .txt.
 
 
+**People also search:**
+- magento 2 email attachment
+- magento 2 send email with attachment
+- magento 2 add attachment to email
+- magento 2.3 add attachment to email
+- magento 2 order email attachment
+- magento 2 order attachment
+- magento 2.3 email attachment
+- magento 2 attach pdf to invoice email
+- magento 2 order attachment extension
+
+
+**Other free Magento 2 extension on Github**
+- [Magento 2 SEO extension](https://github.com/mageplaza/magento-2-seo)
+- [Magento 2 Google Maps](https://github.com/mageplaza/magento-2-google-maps)
+- [Magento 2 Same Order Number](https://github.com/mageplaza/magento-2-same-order-number)
+- [Magento 2 Advanced Reporting](https://github.com/mageplaza/magento-2-reports)
+- [Magento 2 social login](https://github.com/mageplaza/magento-2-social-login)
+- [Magento 2 blog module](https://github.com/mageplaza/magento-2-blog)
+- [Magento 2 Layered Navigation](https://github.com/mageplaza/magento-2-ajax-layered-navigation)
+- [Magento 2 security module](https://github.com/mageplaza/magento-2-security)
 
 
 
