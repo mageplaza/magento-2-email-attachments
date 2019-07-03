@@ -128,7 +128,6 @@ class MailEvent
             foreach ($this->dataHelper->getBccTo($storeId) as $email) {
                 $message->addBcc(trim($email));
             }
-            $message->setPartsToBody();
         }
 
         $this->mail->setTemplateVars(null);
