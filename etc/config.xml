@@ -28,6 +28,7 @@
             </module>
             <general>
                 <enabled>1</enabled>
+                <tac_filename>terms_and_conditions</tac_filename>
             </general>
         </mp_email_attachments>
     </default>
