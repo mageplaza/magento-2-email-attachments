@@ -76,6 +76,10 @@
                         <field id="is_enabled_attach_tac">1</field>
                     </depends>
                 </field>
+                <field id="tac_filename" translate="label comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions filename</label>
+                    <comment>Basename for attachment</comment>
+                </field>
             </group>
         </section>
     </system>

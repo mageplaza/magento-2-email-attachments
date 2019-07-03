@@ -128,7 +128,6 @@ class MailEvent
             foreach ($this->dataHelper->getBccTo($storeId) as $email) {
                 $message->addBcc(trim($email));
             }
-            $message->setPartsToBody();
         }
 
         $this->mail->setTemplateVars(null);
@@ -191,11 +190,13 @@ class MailEvent
     private function setTACAttachment(Message $message, $tacPath)
     {
         list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
+        $tacFilename = $this->dataHelper->getConfigGeneral('tac_filename');
+        $tacFilename = ((empty($tacFilename)) ? 'terms_and_conditions' : $tacFilename) . '.'. $ext;
         if($this->dataHelper->versionCompare("2.3")) {
             $attachment = new \Zend_Mime_Part(file_get_contents($filePath));
             $attachment->type = $mimeType;
             $attachment->disposition =  \Zend_Mime::DISPOSITION_ATTACHMENT;
-            $attachment->filename = 'terms_and_conditions.'. $ext;
+            $attachment->filename = $tacFilename;
             return $attachment;
         }
         else{
@@ -204,7 +205,7 @@ class MailEvent
                 $mimeType,
                 \Zend_Mime::DISPOSITION_ATTACHMENT,
                 \Zend_Mime::ENCODING_BASE64,
-                'terms_and_conditions.' . $ext
+                $tacFilename
             );
         }
     }
