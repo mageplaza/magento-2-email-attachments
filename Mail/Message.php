@@ -22,6 +22,7 @@
 namespace Mageplaza\EmailAttachments\Mail;
 
 use Zend\Mime\Mime;
+use Zend\Mime\Part;
 use Zend\Mime\PartFactory;
 use Zend\Mail\MessageFactory as MailMessageFactory;
 use Zend\Mime\MessageFactory as MimeMessageFactory;
@@ -46,6 +47,13 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
      * @var \Zend\Mail\Message
      */
     private $zendMessage;
+
+    /**
+     * Message type
+     *
+     * @var string
+     */
+    private $messageType = self::TYPE_TEXT;
 
     /**
      * @var \Zend\Mime\Part[]
@@ -76,6 +84,7 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
      */
     public function setBodyText($content)
     {
+        $this->setMessageType(self::TYPE_TEXT);
         $textPart = $this->partFactory->create();
 
         $textPart->setContent($content)
@@ -96,6 +105,7 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
      */
     public function setBodyHtml($content)
     {
+        $this->setMessageType(self::TYPE_HTML);
         $htmlPart = $this->partFactory->create();
 
         $htmlPart->setContent($content)
@@ -103,6 +113,10 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
             ->setCharset($this->zendMessage->getEncoding());
 
         $this->parts[] = $htmlPart;
+
+        $mimeMessage = new \Zend\Mime\Message();
+        $mimeMessage->addPart($htmlPart);
+        $this->zendMessage->setBody($mimeMessage);
 
         return $this;
     }
@@ -151,6 +165,10 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
      */
     public function setBody($body)
     {
+        if (is_string($body) && $this->messageType === self::TYPE_HTML) {
+            $body = self::createHtmlMimeFromString($body);
+        }
+        $this->zendMessage->setBody($body);
         return $this;
     }
 
@@ -250,10 +268,27 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
     }
 
     /**
+     * Create HTML mime message from the string.
+     *
+     * @param string $htmlBody
+     * @return \Zend\Mime\Message
+     */
+    private function createHtmlMimeFromString($htmlBody)
+    {
+        $htmlPart = new Part($htmlBody);
+        $htmlPart->setCharset($this->zendMessage->getEncoding());
+        $htmlPart->setType(Mime::TYPE_HTML);
+        $mimeMessage = new \Zend\Mime\Message();
+        $mimeMessage->addPart($htmlPart);
+        return $mimeMessage;
+    }
+
+    /**
      * @inheritDoc
      */
     public function setMessageType($type)
     {
+        $this->messageType = $type;
         return $this;
     }
 }
