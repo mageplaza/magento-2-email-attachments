@@ -20,163 +20,189 @@
  */
 
 namespace Mageplaza\EmailAttachments\Mail;
-use Zend\Mime\Mime;
-use Zend\Mime\PartFactory;
+
+use Magento\Framework\Mail\MailMessageInterface;
 use Zend\Mail\MessageFactory as MailMessageFactory;
 use Zend\Mime\MessageFactory as MimeMessageFactory;
+use Zend\Mime\Mime;
+use Zend\Mime\Part;
+use Zend\Mime\PartFactory;
 
 /**
  * Class Message
  * @package Mageplaza\EmailAttachments\Mail
  */
-class Message implements \Magento\Framework\Mail\MailMessageInterface{
-	/**
-	 * @var \Zend\Mime\PartFactory
-	 */
-	protected $partFactory;
+class Message implements MailMessageInterface
+{
+    /**
+     * @var PartFactory
+     */
+    protected $partFactory;
 
-	/**
-	 * @var \Zend\Mime\MessageFactory
-	 */
-	protected $mimeMessageFactory;
+    /**
+     * @var MimeMessageFactory
+     */
+    protected $mimeMessageFactory;
 
-	/**
-	 * @var \Zend\Mail\Message
-	 */
-	private $zendMessage;
+    /**
+     * @var \Zend\Mail\Message
+     */
+    private $zendMessage;
 
-	/**
-	 * @var \Zend\Mime\Part[]
-	 */
-	protected $parts = [];
+    /**
+     * Message type
+     *
+     * @var string
+     */
+    private $messageType = self::TYPE_TEXT;
 
-	/**
-	 * Message constructor.
-	 *
-	 * @param \Zend\Mime\PartFactory $partFactory
-	 * @param \Zend\Mime\MessageFactory $mimeMessageFactory
-	 * @param string $charset
-	 */
-	public function __construct(PartFactory $partFactory, MimeMessageFactory $mimeMessageFactory, $charset = 'utf-8')
-	{
-		$this->partFactory = $partFactory;
-		$this->mimeMessageFactory = $mimeMessageFactory;
-		$this->zendMessage = MailMessageFactory::getInstance();
-		$this->zendMessage->setEncoding($charset);
-	}
+    /**
+     * @var Part[]
+     */
+    protected $parts = [];
 
-	/**
-	 * Add the HTML mime part to the message.
-	 *
-	 * @param string $content
-	 * @return $this
-	 */
-	public function setBodyText($content)
-	{
-		$textPart = $this->partFactory->create();
+    /**
+     * Message constructor.
+     *
+     * @param PartFactory $partFactory
+     * @param MimeMessageFactory $mimeMessageFactory
+     * @param string $charset
+     */
+    public function __construct(PartFactory $partFactory, MimeMessageFactory $mimeMessageFactory, $charset = 'utf-8')
+    {
+        $this->partFactory = $partFactory;
+        $this->mimeMessageFactory = $mimeMessageFactory;
+        $this->zendMessage = MailMessageFactory::getInstance();
+        $this->zendMessage->setEncoding($charset);
+    }
 
-		$textPart->setContent($content)
-			->setType(Mime::TYPE_TEXT)
-			->setCharset($this->zendMessage->getEncoding());
+    /**
+     * Add the HTML mime part to the message.
+     *
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setBodyText($content)
+    {
+        $this->setMessageType(self::TYPE_TEXT);
+        $textPart = $this->partFactory->create();
 
-		$this->parts[] = $textPart;
+        $textPart->setContent($content)
+            ->setType(Mime::TYPE_TEXT)
+            ->setCharset($this->zendMessage->getEncoding());
 
-		return $this;
-	}
+        $this->parts[] = $textPart;
 
-	/**
-	 * Add the text mime part to the message.
-	 *
-	 * @param string $content
-	 * @return $this
-	 */
-	public function setBodyHtml($content)
-	{
-		$htmlPart = $this->partFactory->create();
+        return $this;
+    }
 
-		$htmlPart->setContent($content)
-			->setType(Mime::TYPE_HTML)
-			->setCharset($this->zendMessage->getEncoding());
+    /**
+     * Add the text mime part to the message.
+     *
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setBodyHtml($content)
+    {
+        $this->setMessageType(self::TYPE_HTML);
+        $htmlPart = $this->partFactory->create();
 
-		$this->parts[] = $htmlPart;
+        $htmlPart->setContent($content)
+            ->setType(Mime::TYPE_HTML)
+            ->setCharset($this->zendMessage->getEncoding());
 
-		return $this;
-	}
+        $this->parts[] = $htmlPart;
 
-	/**
-	 * Add the attachment mime part to the message.
-	 *
-	 * @param string $content
-	 * @param string $fileName
-	 * @param string $fileType
-	 * @return $this
-	 */
-	public function setBodyAttachment($content, $fileName, $fileType, $encoding = '8bit')
-	{
-		$attachmentPart = $this->partFactory->create();
+        $mimeMessage = new \Zend\Mime\Message();
+        $mimeMessage->addPart($htmlPart);
+        $this->zendMessage->setBody($mimeMessage);
 
-		$attachmentPart->setContent($content)
-			->setType($fileType)
-			->setFileName($fileName)
-			->setDisposition(Mime::DISPOSITION_ATTACHMENT)
-		    ->setEncoding($encoding);
+        return $this;
+    }
 
-		$this->parts[] = $attachmentPart;
+    /**
+     * Add the attachment mime part to the message.
+     *
+     * @param string $content
+     * @param string $fileName
+     * @param string $fileType
+     * @param string $encoding
+     *
+     * @return $this
+     */
+    public function setBodyAttachment($content, $fileName, $fileType, $encoding = '8bit')
+    {
+        $attachmentPart = $this->partFactory->create();
 
-		return $this;
-	}
+        $attachmentPart->setContent($content)
+            ->setType($fileType)
+            ->setFileName($fileName)
+            ->setDisposition(Mime::DISPOSITION_ATTACHMENT)
+            ->setEncoding($encoding);
 
-	/**
-	 * Set parts to Zend message body.
-	 *
-	 * @return $this
-	 */
-	public function setPartsToBody()
-	{
-		$mimeMessage = $this->mimeMessageFactory->create();
-		$mimeMessage->setParts($this->parts);
-		$this->zendMessage->setBody($mimeMessage);
+        $this->parts[] = $attachmentPart;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setBody($body)
-	{
-		return $this;
-	}
+    /**
+     * Set parts to Zend message body.
+     *
+     * @return $this
+     */
+    public function setPartsToBody()
+    {
+        $mimeMessage = $this->mimeMessageFactory->create();
+        $mimeMessage->setParts($this->parts);
+        $this->zendMessage->setBody($mimeMessage);
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setSubject($subject)
-	{
-		$this->zendMessage->setSubject($subject);
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function setBody($body)
+    {
+        if (is_string($body) && $this->messageType === self::TYPE_HTML) {
+            $body = self::createHtmlMimeFromString($body);
+        }
+        $this->zendMessage->setBody($body);
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getSubject()
-	{
-		return $this->zendMessage->getSubject();
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getBody()
-	{
-		return $this->zendMessage->getBody();
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function setSubject($subject)
+    {
+        $this->zendMessage->setSubject($subject);
 
-	/**
-	 * {@inheritdoc}
-	 */
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSubject()
+    {
+        return $this->zendMessage->getSubject();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBody()
+    {
+        return $this->zendMessage->getBody();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setFrom($fromAddress)
     {
         $this->setFromAddress($fromAddress, null);
@@ -191,62 +217,83 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface{
     public function setFromAddress($fromAddress, $fromName = null)
     {
         $this->zendMessage->setFrom($fromAddress, $fromName);
+
         return $this;
     }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function addTo($toAddress)
-	{
-		$this->zendMessage->addTo($toAddress);
+    /**
+     * {@inheritdoc}
+     */
+    public function addTo($toAddress)
+    {
+        $this->zendMessage->addTo($toAddress);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function addCc($ccAddress)
-	{
-		$this->zendMessage->addCc($ccAddress);
+    /**
+     * {@inheritdoc}
+     */
+    public function addCc($ccAddress)
+    {
+        $this->zendMessage->addCc($ccAddress);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function addBcc($bccAddress)
-	{
-		$this->zendMessage->addBcc($bccAddress);
+    /**
+     * {@inheritdoc}
+     */
+    public function addBcc($bccAddress)
+    {
+        $this->zendMessage->addBcc($bccAddress);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setReplyTo($replyToAddress)
-	{
-		$this->zendMessage->setReplyTo($replyToAddress);
+    /**
+     * {@inheritdoc}
+     */
+    public function setReplyTo($replyToAddress)
+    {
+        $this->zendMessage->setReplyTo($replyToAddress);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getRawMessage()
-	{
-		return $this->zendMessage->toString();
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getRawMessage()
+    {
+        return $this->zendMessage->toString();
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function setMessageType($type)
-	{
-		return $this;
-	}
+    /**
+     * Create HTML mime message from the string.
+     *
+     * @param string $htmlBody
+     *
+     * @return \Zend\Mime\Message
+     */
+    private function createHtmlMimeFromString($htmlBody)
+    {
+        $htmlPart = new Part($htmlBody);
+        $htmlPart->setCharset($this->zendMessage->getEncoding());
+        $htmlPart->setType(Mime::TYPE_HTML);
+        $mimeMessage = new \Zend\Mime\Message();
+        $mimeMessage->addPart($htmlPart);
+
+        return $mimeMessage;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setMessageType($type)
+    {
+        $this->messageType = $type;
+
+        return $this;
+    }
 }
