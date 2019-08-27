@@ -23,9 +23,9 @@ namespace Mageplaza\EmailAttachments\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
-use Mageplaza\EmailAttachments\Mail\Message;
 use Magento\Framework\ObjectManagerInterface;
 use Mageplaza\EmailAttachments\Helper\Data;
+use Mageplaza\EmailAttachments\Mail\Message;
 
 /**
  * Class MailEvent
@@ -77,9 +77,9 @@ class MailEvent
         Filesystem $filesystem,
         ObjectManagerInterface $objectManager
     ) {
-        $this->mail          = $mail;
-        $this->dataHelper    = $dataHelper;
-        $this->filesystem    = $filesystem;
+        $this->mail = $mail;
+        $this->dataHelper = $dataHelper;
+        $this->filesystem = $filesystem;
         $this->objectManager = $objectManager;
     }
 
@@ -96,7 +96,7 @@ class MailEvent
             return;
         }
         /** @var \Magento\Store\Model\Store $store */
-        $store   = $templateVars['store'];
+        $store = $templateVars['store'];
         $storeId = isset($store) ? $store->getId() : null;
 
         if (!$this->dataHelper->isEnabled($storeId)) {
@@ -170,23 +170,22 @@ class MailEvent
         $pdf = $this->objectManager->create($pdfModel)->getPdf([$obj]);
 
         if ($this->dataHelper->versionCompare("2.3")) {
-            $attachment              = new \Zend_Mime_Part($pdf->render());
-            $attachment->type        = 'application/pdf';
+            $attachment = new \Zend_Mime_Part($pdf->render());
+            $attachment->type = 'application/pdf';
             $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
-            $attachment->filename    = $emailType . $obj->getIncrementId() . '.pdf';
+            $attachment->filename = $emailType . $obj->getIncrementId() . '.pdf';
 
             return $attachment;
-        } else {
-            $message->createAttachment(
-                $pdf->render(),
-                'application/pdf',
-                \Zend_Mime::DISPOSITION_ATTACHMENT,
-                \Zend_Mime::ENCODING_BASE64,
-                $emailType . $obj->getIncrementId() . '.pdf'
-            );
-
-            return null;
         }
+        $message->createAttachment(
+            $pdf->render(),
+            'application/pdf',
+            \Zend_Mime::DISPOSITION_ATTACHMENT,
+            \Zend_Mime::ENCODING_BASE64,
+            $emailType . $obj->getIncrementId() . '.pdf'
+        );
+
+        return null;
     }
 
     /**
@@ -199,23 +198,22 @@ class MailEvent
     {
         list($filePath, $ext, $mimeType) = $this->getTacFile($tacPath);
         if ($this->dataHelper->versionCompare('2.3')) {
-            $attachment              = new \Zend_Mime_Part(file_get_contents($filePath));
-            $attachment->type        = $mimeType;
+            $attachment = new \Zend_Mime_Part(file_get_contents($filePath));
+            $attachment->type = $mimeType;
             $attachment->disposition = \Zend_Mime::DISPOSITION_ATTACHMENT;
-            $attachment->filename    = 'terms_and_conditions.' . $ext;
+            $attachment->filename = 'terms_and_conditions.' . $ext;
 
             return $attachment;
-        } else {
-            $message->createAttachment(
-                file_get_contents($filePath),
-                $mimeType,
-                \Zend_Mime::DISPOSITION_ATTACHMENT,
-                \Zend_Mime::ENCODING_BASE64,
-                'terms_and_conditions.' . $ext
-            );
-
-            return null;
         }
+        $message->createAttachment(
+            file_get_contents($filePath),
+            $mimeType,
+            \Zend_Mime::DISPOSITION_ATTACHMENT,
+            \Zend_Mime::ENCODING_BASE64,
+            'terms_and_conditions.' . $ext
+        );
+
+        return null;
     }
 
     /**
@@ -226,9 +224,9 @@ class MailEvent
     private function getTacFile($tacPath)
     {
         $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
-        $filePath       = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacPath);
-        $ext            = substr($filePath, strrpos($filePath, '.') + 1);
-        $mimeType       = self::$mimeTypes[$ext];
+        $filePath = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacPath);
+        $ext = substr($filePath, strrpos($filePath, '.') + 1);
+        $mimeType = self::$mimeTypes[$ext];
 
         return [$filePath, $ext, $mimeType];
     }
