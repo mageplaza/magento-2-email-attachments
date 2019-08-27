@@ -21,25 +21,26 @@
 
 namespace Mageplaza\EmailAttachments\Mail;
 
+use Magento\Framework\Mail\MailMessageInterface;
+use Zend\Mail\MessageFactory as MailMessageFactory;
+use Zend\Mime\MessageFactory as MimeMessageFactory;
 use Zend\Mime\Mime;
 use Zend\Mime\Part;
 use Zend\Mime\PartFactory;
-use Zend\Mail\MessageFactory as MailMessageFactory;
-use Zend\Mime\MessageFactory as MimeMessageFactory;
 
 /**
  * Class Message
  * @package Mageplaza\EmailAttachments\Mail
  */
-class Message implements \Magento\Framework\Mail\MailMessageInterface
+class Message implements MailMessageInterface
 {
     /**
-     * @var \Zend\Mime\PartFactory
+     * @var PartFactory
      */
     protected $partFactory;
 
     /**
-     * @var \Zend\Mime\MessageFactory
+     * @var MimeMessageFactory
      */
     protected $mimeMessageFactory;
 
@@ -56,22 +57,22 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
     private $messageType = self::TYPE_TEXT;
 
     /**
-     * @var \Zend\Mime\Part[]
+     * @var Part[]
      */
     protected $parts = [];
 
     /**
      * Message constructor.
      *
-     * @param \Zend\Mime\PartFactory $partFactory
-     * @param \Zend\Mime\MessageFactory $mimeMessageFactory
+     * @param PartFactory $partFactory
+     * @param MimeMessageFactory $mimeMessageFactory
      * @param string $charset
      */
     public function __construct(PartFactory $partFactory, MimeMessageFactory $mimeMessageFactory, $charset = 'utf-8')
     {
-        $this->partFactory        = $partFactory;
+        $this->partFactory = $partFactory;
         $this->mimeMessageFactory = $mimeMessageFactory;
-        $this->zendMessage        = MailMessageFactory::getInstance();
+        $this->zendMessage = MailMessageFactory::getInstance();
         $this->zendMessage->setEncoding($charset);
     }
 
@@ -169,6 +170,7 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
             $body = self::createHtmlMimeFromString($body);
         }
         $this->zendMessage->setBody($body);
+
         return $this;
     }
 
@@ -271,6 +273,7 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
      * Create HTML mime message from the string.
      *
      * @param string $htmlBody
+     *
      * @return \Zend\Mime\Message
      */
     private function createHtmlMimeFromString($htmlBody)
@@ -280,6 +283,7 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
         $htmlPart->setType(Mime::TYPE_HTML);
         $mimeMessage = new \Zend\Mime\Message();
         $mimeMessage->addPart($htmlPart);
+
         return $mimeMessage;
     }
 
@@ -289,6 +293,7 @@ class Message implements \Magento\Framework\Mail\MailMessageInterface
     public function setMessageType($type)
     {
         $this->messageType = $type;
+
         return $this;
     }
 }
