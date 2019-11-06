@@ -21,18 +21,17 @@
 
 namespace Mageplaza\EmailAttachments\Mail;
 
-use Magento\Framework\Mail\MailMessageInterface;
-use Zend\Mail\MessageFactory as MailMessageFactory;
-use Zend\Mime\MessageFactory as MimeMessageFactory;
 use Zend\Mime\Mime;
 use Zend\Mime\Part;
 use Zend\Mime\PartFactory;
+use Zend\Mail\MessageFactory as MailMessageFactory;
+use Zend\Mime\MessageFactory as MimeMessageFactory;
 
 /**
  * Class Message
  * @package Mageplaza\EmailAttachments\Mail
  */
-class Message implements MailMessageInterface
+class Message extends \Magento\Framework\Mail\Message
 {
     /**
      * @var PartFactory
@@ -57,7 +56,7 @@ class Message implements MailMessageInterface
     private $messageType = self::TYPE_TEXT;
 
     /**
-     * @var Part[]
+     * @var array
      */
     protected $parts = [];
 
@@ -68,95 +67,23 @@ class Message implements MailMessageInterface
      * @param MimeMessageFactory $mimeMessageFactory
      * @param string $charset
      */
-    public function __construct(PartFactory $partFactory, MimeMessageFactory $mimeMessageFactory, $charset = 'utf-8')
-    {
-        $this->partFactory = $partFactory;
+    public function __construct(
+        PartFactory $partFactory,
+        MimeMessageFactory $mimeMessageFactory,
+        $charset = 'utf-8'
+    ) {
+        $this->partFactory        = $partFactory;
         $this->mimeMessageFactory = $mimeMessageFactory;
-        $this->zendMessage = MailMessageFactory::getInstance();
+        $this->zendMessage        = MailMessageFactory::getInstance();
         $this->zendMessage->setEncoding($charset);
     }
 
     /**
-     * Add the HTML mime part to the message.
-     *
-     * @param string $content
-     *
-     * @return $this
+     * @inheritDoc
      */
-    public function setBodyText($content)
+    public function setMessageType($type)
     {
-        $this->setMessageType(self::TYPE_TEXT);
-        $textPart = $this->partFactory->create();
-
-        $textPart->setContent($content)
-            ->setType(Mime::TYPE_TEXT)
-            ->setCharset($this->zendMessage->getEncoding());
-
-        $this->parts[] = $textPart;
-
-        return $this;
-    }
-
-    /**
-     * Add the text mime part to the message.
-     *
-     * @param string $content
-     *
-     * @return $this
-     */
-    public function setBodyHtml($content)
-    {
-        $this->setMessageType(self::TYPE_HTML);
-        $htmlPart = $this->partFactory->create();
-
-        $htmlPart->setContent($content)
-            ->setType(Mime::TYPE_HTML)
-            ->setCharset($this->zendMessage->getEncoding());
-
-        $this->parts[] = $htmlPart;
-
-        $mimeMessage = new \Zend\Mime\Message();
-        $mimeMessage->addPart($htmlPart);
-        $this->zendMessage->setBody($mimeMessage);
-
-        return $this;
-    }
-
-    /**
-     * Add the attachment mime part to the message.
-     *
-     * @param string $content
-     * @param string $fileName
-     * @param string $fileType
-     * @param string $encoding
-     *
-     * @return $this
-     */
-    public function setBodyAttachment($content, $fileName, $fileType, $encoding = '8bit')
-    {
-        $attachmentPart = $this->partFactory->create();
-
-        $attachmentPart->setContent($content)
-            ->setType($fileType)
-            ->setFileName($fileName)
-            ->setDisposition(Mime::DISPOSITION_ATTACHMENT)
-            ->setEncoding($encoding);
-
-        $this->parts[] = $attachmentPart;
-
-        return $this;
-    }
-
-    /**
-     * Set parts to Zend message body.
-     *
-     * @return $this
-     */
-    public function setPartsToBody()
-    {
-        $mimeMessage = $this->mimeMessageFactory->create();
-        $mimeMessage->setParts($this->parts);
-        $this->zendMessage->setBody($mimeMessage);
+        $this->messageType = $type;
 
         return $this;
     }
@@ -270,6 +197,56 @@ class Message implements MailMessageInterface
     }
 
     /**
+     * Add the HTML mime part to the message.
+     *
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setBodyText($content)
+    {
+        $this->setMessageType(self::TYPE_TEXT);
+        $textPart = $this->partFactory->create();
+
+        $textPart->setContent($content)
+            ->setType(Mime::TYPE_TEXT)
+            ->setCharset($this->zendMessage->getEncoding());
+
+        $this->parts[] = $textPart;
+        $mimeMessage   = new \Zend\Mime\Message();
+        $mimeMessage->addPart($textPart);
+        $this->zendMessage->setBody($mimeMessage);
+
+        return $this;
+    }
+
+    /**
+     * Add the text mime part to the message.
+     *
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setBodyHtml($content)
+    {
+        $this->setMessageType(self::TYPE_HTML);
+        $htmlPart = $this->partFactory->create();
+
+        $htmlPart->setContent($content)
+            ->setType(Mime::TYPE_HTML)
+            ->setCharset($this->zendMessage->getEncoding());
+
+
+        $this->parts[] = $htmlPart;
+
+        $mimeMessage = new \Zend\Mime\Message();
+        $mimeMessage->addPart($htmlPart);
+        $this->zendMessage->setBody($mimeMessage);
+
+        return $this;
+    }
+
+    /**
      * Create HTML mime message from the string.
      *
      * @param string $htmlBody
@@ -284,15 +261,46 @@ class Message implements MailMessageInterface
         $mimeMessage = new \Zend\Mime\Message();
         $mimeMessage->addPart($htmlPart);
 
+        $this->parts[] = $htmlPart;
+
         return $mimeMessage;
     }
 
     /**
-     * @inheritDoc
+     * Add the attachment mime part to the message.
+     *
+     * @param string $content
+     * @param string $fileName
+     * @param string $fileType
+     * @param string $encoding
+     *
+     * @return $this
      */
-    public function setMessageType($type)
+    public function setBodyAttachment($content, $fileName, $fileType, $encoding = '8bit')
     {
-        $this->messageType = $type;
+        $attachmentPart = $this->partFactory->create();
+
+        $attachmentPart->setContent($content)
+            ->setType($fileType)
+            ->setFileName($fileName)
+            ->setDisposition(Mime::DISPOSITION_ATTACHMENT)
+            ->setEncoding($encoding);
+
+        $this->parts[] = $attachmentPart;
+
+        return $this;
+    }
+
+    /**
+     * Set parts to Zend message body.
+     *
+     * @return $this
+     */
+    public function setPartsToBody()
+    {
+        $mimeMessage = $this->mimeMessageFactory->create();
+        $mimeMessage->setParts($this->parts);
+        $this->zendMessage->setBody($mimeMessage);
 
         return $this;
     }
