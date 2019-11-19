@@ -311,6 +311,27 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function addCc($ccAddress)
+    {
+        $this->message->addCc($ccAddress);
+
+        return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addBcc($bccAddress)
+    {
+        $this->message->addBcc($bccAddress);
+
+        return $this;
+    }
+
+    /**
      * @return $this
      */
     public function setPartsToBody()
