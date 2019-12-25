@@ -21,8 +21,10 @@
 
 namespace Mageplaza\EmailAttachments\Mail;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Mail\Address;
 use Magento\Framework\Mail\AddressFactory;
+use Magento\Framework\Mail\EmailMessageInterface;
 use Magento\Framework\Mail\Exception\InvalidArgumentException;
 use Magento\Framework\Mail\MimeMessageInterface;
 use Magento\Framework\Mail\MimeMessageInterfaceFactory;
@@ -30,26 +32,14 @@ use Zend\Mail\Address as ZendAddress;
 use Zend\Mail\AddressList;
 use Zend\Mail\Message as ZendMessage;
 use Zend\Mime\Message as ZendMimeMessage;
-use Zend\Mime\Mime;
-use Zend\Mime\Part;
-use Zend\Mime\PartFactory;
 
 /**
  * Class EmailMessage
+ * Replacement for \Magento\Framework\Mail\EmailMessage
  * @package Mageplaza\EmailAttachments\Mail
  */
-class EmailMessage extends \Magento\Framework\Mail\EmailMessage
+class EmailMessage implements EmailMessageInterface
 {
-    /**
-     * @var PartFactory
-     */
-    protected $partFactory;
-
-    /**
-     * @var Part[]
-     */
-    protected $parts = [];
-
     /**
      * @var ZendMessage
      */
@@ -66,34 +56,38 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
     private $addressFactory;
 
     /**
-     * EmailMessage constructor.
+     * EmailMessage constructor
      *
-     * @param PartFactory $partFactory
      * @param MimeMessageInterface $body
      * @param array $to
      * @param MimeMessageInterfaceFactory $mimeMessageFactory
      * @param AddressFactory $addressFactory
-     * @param array|null $from
-     * @param array|null $cc
-     * @param array|null $bcc
-     * @param array|null $replyTo
+     * @param Address[]|null $from
+     * @param Address[]|null $cc
+     * @param Address[]|null $bcc
+     * @param Address[]|null $replyTo
      * @param Address|null $sender
      * @param string|null $subject
      * @param string|null $encoding
+     *
+     * @throws InvalidArgumentException
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function __construct(
-        PartFactory $partFactory,
-        MimeMessageInterface $body,
+        $body,
         array $to,
-        MimeMessageInterfaceFactory $mimeMessageFactory,
-        AddressFactory $addressFactory,
-        ?array $from = null,
-        ?array $cc = null,
-        ?array $bcc = null,
-        ?array $replyTo = null,
-        ?Address $sender = null,
-        ?string $subject = '',
-        ?string $encoding = ''
+        $mimeMessageFactory = null,
+        $addressFactory = null,
+        array $from = null,
+        array $cc = null,
+        array $bcc = null,
+        array $replyTo = null,
+        $sender = null,
+        $subject = '',
+        $encoding = ''
     ) {
         $this->message = new ZendMessage();
         $mimeMessage   = new ZendMimeMessage();
@@ -126,9 +120,14 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
         if ($bcc) {
             $this->message->setBcc($this->convertAddressArrayToAddressList($bcc));
         }
+        if (!$mimeMessageFactory) {
+            $mimeMessageFactory = ObjectManager::getInstance()->create(MimeMessageInterfaceFactory::class);
+        }
         $this->mimeMessageFactory = $mimeMessageFactory;
-        $this->addressFactory     = $addressFactory;
-        $this->partFactory        = $partFactory;
+        if (!$addressFactory) {
+            $addressFactory = ObjectManager::getInstance()->create(AddressFactory::class);
+        }
+        $this->addressFactory = $addressFactory;
     }
 
     /**
@@ -150,7 +149,7 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
     /**
      * @inheritDoc
      */
-    public function getFrom(): ?array
+    public function getFrom(): array
     {
         return $this->convertAddressListToAddressArray($this->message->getFrom());
     }
@@ -166,7 +165,7 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
     /**
      * @inheritDoc
      */
-    public function getCc(): ?array
+    public function getCc(): array
     {
         return $this->convertAddressListToAddressArray($this->message->getCc());
     }
@@ -174,7 +173,7 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
     /**
      * @inheritDoc
      */
-    public function getBcc(): ?array
+    public function getBcc(): array
     {
         return $this->convertAddressListToAddressArray($this->message->getBcc());
     }
@@ -182,7 +181,7 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
     /**
      * @inheritDoc
      */
-    public function getReplyTo(): ?array
+    public function getReplyTo(): array
     {
         return $this->convertAddressListToAddressArray($this->message->getReplyTo());
     }
@@ -190,7 +189,7 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
     /**
      * @inheritDoc
      */
-    public function getSender(): ?Address
+    public function getSender(): Address
     {
         /** @var ZendAddress $zendSender */
         if (!$zendSender = $this->message->getSender()) {
@@ -208,7 +207,7 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
     /**
      * @inheritDoc
      */
-    public function getSubject(): ?string
+    public function getSubject(): string
     {
         return $this->message->getSubject();
     }
@@ -288,67 +287,39 @@ class EmailMessage extends \Magento\Framework\Mail\EmailMessage
     }
 
     /**
-     * @param $content
-     * @param $fileName
-     * @param $fileType
-     * @param string $encoding
+     * @param $bodyPart
      *
      * @return $this
      */
-    public function setBodyAttachment($content, $fileName, $fileType, $encoding = '8bit')
+    public function setBody($bodyPart)
     {
-        $attachmentPart = $this->partFactory->create();
-
-        $attachmentPart->setContent($content)
-            ->setType($fileType)
-            ->setFileName($fileName)
-            ->setDisposition(Mime::DISPOSITION_ATTACHMENT)
-            ->setEncoding($encoding);
-
-        $this->parts[] = $attachmentPart;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addCc($ccAddress)
-    {
-        $this->message->addCc($ccAddress);
-
-        return $this;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addBcc($bccAddress)
-    {
-        $this->message->addBcc($bccAddress);
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setPartsToBody()
-    {
-        $message       = ZendMessage::fromString($this->getRawMessage());
-        $body          = new Part(quoted_printable_decode($message->getBody()));
-        $body->type    = 'text/html';
-        $body->charset = 'utf-8';
-        $parts         = [$body];
-
-        foreach ($this->parts as $part) {
-            $parts[] = $part;
-        }
-
-        $bodyPart = new ZendMimeMessage();
-        $bodyPart->setParts($parts);
         $this->message->setBody($bodyPart);
+
+        return $this;
+    }
+
+    /**
+     * @param string|ZendAddress|array|AddressList $emailOrAddressOrList
+     * @param string|null $name
+     *
+     * @return EmailMessage
+     */
+    public function addCc($emailOrAddressOrList, $name = null)
+    {
+        $this->message->addCc($emailOrAddressOrList, $name);
+
+        return $this;
+    }
+
+    /**
+     * @param string|ZendAddress|array|AddressList $emailOrAddressOrList
+     * @param string|null $name
+     *
+     * @return EmailMessage
+     */
+    public function addBcc($emailOrAddressOrList, $name = null)
+    {
+        $this->message->addBcc($emailOrAddressOrList, $name);
 
         return $this;
     }

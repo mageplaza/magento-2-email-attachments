@@ -24,6 +24,5 @@
     <type name="Magento\Framework\Mail\TransportInterfaceFactory">
         <plugin name="mageplaza_emailattachments_transport_factory" type="Mageplaza\EmailAttachments\Mail\TransportFactory"/>
     </type>
-    <preference for="Magento\Framework\Mail\Message" type="Mageplaza\EmailAttachments\Mail\Message"/>
     <preference for="Magento\Framework\Mail\EmailMessage" type="Mageplaza\EmailAttachments\Mail\EmailMessage"/>
 </config>
