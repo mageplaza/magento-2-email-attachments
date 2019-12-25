@@ -24,7 +24,6 @@ namespace Mageplaza\EmailAttachments\Mail;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Mail\Address;
 use Magento\Framework\Mail\AddressFactory;
-use Magento\Framework\Mail\EmailMessageInterface;
 use Magento\Framework\Mail\Exception\InvalidArgumentException;
 use Magento\Framework\Mail\MimeMessageInterface;
 use Magento\Framework\Mail\MimeMessageInterfaceFactory;
@@ -38,7 +37,7 @@ use Zend\Mime\Message as ZendMimeMessage;
  * Replacement for \Magento\Framework\Mail\EmailMessage
  * @package Mageplaza\EmailAttachments\Mail
  */
-class EmailMessage implements EmailMessageInterface
+class EmailMessage
 {
     /**
      * @var ZendMessage
@@ -133,7 +132,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getEncoding(): string
+    public function getEncoding()
     {
         return $this->message->getEncoding();
     }
@@ -141,7 +140,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getHeaders(): array
+    public function getHeaders()
     {
         return $this->message->getHeaders()->toArray();
     }
@@ -149,7 +148,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getFrom(): array
+    public function getFrom()
     {
         return $this->convertAddressListToAddressArray($this->message->getFrom());
     }
@@ -157,7 +156,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getTo(): array
+    public function getTo()
     {
         return $this->convertAddressListToAddressArray($this->message->getTo());
     }
@@ -165,7 +164,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getCc(): array
+    public function getCc()
     {
         return $this->convertAddressListToAddressArray($this->message->getCc());
     }
@@ -173,7 +172,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getBcc(): array
+    public function getBcc()
     {
         return $this->convertAddressListToAddressArray($this->message->getBcc());
     }
@@ -181,7 +180,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getReplyTo(): array
+    public function getReplyTo()
     {
         return $this->convertAddressListToAddressArray($this->message->getReplyTo());
     }
@@ -189,7 +188,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getSender(): Address
+    public function getSender()
     {
         /** @var ZendAddress $zendSender */
         if (!$zendSender = $this->message->getSender()) {
@@ -207,7 +206,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getSubject(): string
+    public function getSubject()
     {
         return $this->message->getSubject();
     }
@@ -215,7 +214,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getBody(): MimeMessageInterface
+    public function getBody()
     {
         return $this->mimeMessageFactory->create(
             ['parts' => $this->message->getBody()->getParts()]
@@ -225,7 +224,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function getBodyText(): string
+    public function getBodyText()
     {
         return $this->message->getBodyText();
     }
@@ -233,7 +232,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritdoc
      */
-    public function getRawMessage(): string
+    public function getRawMessage()
     {
         return $this->toString();
     }
@@ -241,7 +240,7 @@ class EmailMessage implements EmailMessageInterface
     /**
      * @inheritDoc
      */
-    public function toString(): string
+    public function toString()
     {
         return $this->message->toString();
     }
@@ -253,7 +252,7 @@ class EmailMessage implements EmailMessageInterface
      *
      * @return Address[]
      */
-    private function convertAddressListToAddressArray(AddressList $addressList): array
+    private function convertAddressListToAddressArray(AddressList $addressList)
     {
         $arrayList = [];
         foreach ($addressList as $address) {
