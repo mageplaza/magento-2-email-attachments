@@ -21,13 +21,13 @@
 
 namespace Mageplaza\EmailAttachments\Model\Config\Source;
 
-use Magento\Framework\Option\ArrayInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
 /**
  * Class AttachPdf
  * @package Mageplaza\EmailAttachments\Model\Config\Source
  */
-class AttachPdf implements ArrayInterface
+class AttachPdf implements OptionSourceInterface
 {
     const INVOICE     = 'invoice';
     const SHIPMENT    = 'shipment';

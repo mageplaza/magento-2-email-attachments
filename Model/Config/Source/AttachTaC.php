@@ -21,13 +21,13 @@
 
 namespace Mageplaza\EmailAttachments\Model\Config\Source;
 
-use Magento\Framework\Option\ArrayInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
 /**
  * Class AttachTaC
  * @package Mageplaza\EmailAttachments\Model\Config\Source
  */
-class AttachTaC implements ArrayInterface
+class AttachTaC implements OptionSourceInterface
 {
     const ORDER       = 'order';
     const INVOICE     = 'invoice';
