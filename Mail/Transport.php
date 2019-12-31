@@ -26,7 +26,9 @@ namespace Mageplaza\EmailAttachments\Mail;
 use Exception;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\MailException;
+use Magento\Framework\Mail\MailMessageInterface;
 use Magento\Store\Model\ScopeInterface;
+use Traversable;
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Sendmail;
 
@@ -59,19 +61,19 @@ class Transport extends \Magento\Email\Model\Transport
     private $zendTransport;
 
     /**
-     * @var EmailMessage
+     * @var MailMessageInterface
      */
     private $message;
 
     /**
      * Transport constructor.
      *
-     * @param EmailMessage $message Email message object
+     * @param MailMessageInterface $message Email message object
      * @param ScopeConfigInterface $scopeConfig Core store config
-     * @param null|string|array|\Traversable $parameters Config options for sendmail parameters
+     * @param null|string|array|Traversable $parameters Config options for sendmail parameters
      */
     public function __construct(
-        EmailMessage $message,
+        $message,
         ScopeConfigInterface $scopeConfig,
         $parameters = null
     ) {

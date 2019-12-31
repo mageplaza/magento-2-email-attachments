@@ -23,6 +23,7 @@ namespace Mageplaza\EmailAttachments\Model;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
+use Magento\Framework\Mail\MailMessageInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Creditmemo;
@@ -30,10 +31,10 @@ use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\Order\Shipment;
 use Magento\Store\Model\Store;
 use Mageplaza\EmailAttachments\Helper\Data;
-use Mageplaza\EmailAttachments\Mail\EmailMessage;
 use Zend\Mail\Message;
 use Zend\Mime\Mime;
 use Zend\Mime\Part;
+use Zend_Mail;
 use Zend_Mime;
 use Zend_Mime_Decode;
 use Zend_Pdf;
@@ -101,7 +102,7 @@ class MailEvent
     }
 
     /**
-     * @param EmailMessage $message
+     * @param MailMessageInterface|Zend_Mail $message
      *
      * @throws Zend_Pdf_Exception
      */
@@ -168,7 +169,7 @@ class MailEvent
 
     /**
      * @param string $emailType
-     * @param EmailMessage $message
+     * @param MailMessageInterface|Zend_Mail $message
      * @param Order|Invoice|Shipment|Creditmemo $obj
      *
      * @throws Zend_Pdf_Exception
@@ -201,7 +202,7 @@ class MailEvent
     }
 
     /**
-     * @param EmailMessage $message
+     * @param MailMessageInterface|Zend_Mail $message
      */
     private function setTACAttachment($message)
     {
@@ -229,7 +230,7 @@ class MailEvent
     }
 
     /**
-     * @param EmailMessage $message
+     * @param MailMessageInterface|Zend_Mail $message
      */
     private function setBodyAttachment($message)
     {
@@ -245,7 +246,7 @@ class MailEvent
             $part->setDisposition(Mime::DISPOSITION_INLINE);
         }
         $part->setType(Mime::TYPE_HTML);
-        $this->parts[] = $part;
+        array_unshift($this->parts, $part);
 
         $bodyPart = new \Zend\Mime\Message();
         $bodyPart->setParts($this->parts);
