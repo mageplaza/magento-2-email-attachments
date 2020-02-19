@@ -28,6 +28,8 @@
             </module>
             <general>
                 <enabled>1</enabled>
+                <attach_pdf>invoice,shipment,creditmemo</attach_pdf>
+                <attach_tac>order,invoice,shipment,creditmemo</attach_tac>
             </general>
         </mp_email_attachments>
     </default>

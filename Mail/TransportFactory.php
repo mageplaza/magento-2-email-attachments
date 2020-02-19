@@ -21,7 +21,6 @@
 
 namespace Mageplaza\EmailAttachments\Mail;
 
-use Closure;
 use Magento\Framework\Mail\TransportInterfaceFactory;
 use Mageplaza\EmailAttachments\Model\MailEvent;
 use Zend_Pdf_Exception;
@@ -49,21 +48,17 @@ class TransportFactory
 
     /**
      * @param TransportInterfaceFactory $subject
-     * @param Closure $proceed
      * @param array $data
      *
      * @return mixed
      * @throws Zend_Pdf_Exception
      */
-    public function aroundCreate(
-        TransportInterfaceFactory $subject,
-        Closure $proceed,
-        array $data = []
-    ) {
+    public function beforeCreate(TransportInterfaceFactory $subject, array $data = [])
+    {
         if (isset($data['message'])) {
             $this->mailEvent->dispatch($data['message']);
         }
 
-        return $proceed($data);
+        return [$data];
     }
 }

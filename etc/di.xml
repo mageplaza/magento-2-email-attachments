@@ -22,7 +22,10 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Framework\Mail\TransportInterfaceFactory">
+        <arguments>
+            <argument name="instanceName" xsi:type="string">Mageplaza\EmailAttachments\Mail\Transport</argument>
+        </arguments>
         <plugin name="mageplaza_emailattachments_transport_factory" type="Mageplaza\EmailAttachments\Mail\TransportFactory"/>
     </type>
-    <preference for="Magento\Framework\Mail\Message" type="Mageplaza\EmailAttachments\Mail\Message"/>
+    <preference for="Magento\Framework\Mail\EmailMessageInterfaceFactory" type="Mageplaza\EmailAttachments\Mail\EmailMessageFactory"/>
 </config>
