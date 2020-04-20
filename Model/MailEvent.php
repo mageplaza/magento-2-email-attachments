@@ -124,7 +124,7 @@ class MailEvent
             /** @var Order|Invoice|Shipment|Creditmemo $obj */
             $obj = $templateVars[$emailType];
 
-            if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId), true)) {
+            if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId), true) && $this->dataHelper->isEnabledAttachPdf($storeId)) {
                 $this->setPdfAttachment($emailType, $message, $obj);
             }
 
@@ -133,7 +133,7 @@ class MailEvent
                 $this->setTACAttachment($message);
             }
 
-            if ($this->dataHelper->versionCompare('2.2.9')) {
+            if ($this->dataHelper->versionCompare('2.2.9', '<=')) {
                 $this->setBodyAttachment($message);
             }
 
@@ -241,6 +241,7 @@ class MailEvent
 
         $part = new Part($body);
         $part->setCharset('utf-8');
+        $part->setEncoding(Mime::ENCODING_BASE64);
         if ($this->dataHelper->versionCompare('2.3.3')) {
             $part->setEncoding(Mime::ENCODING_QUOTEDPRINTABLE);
             $part->setDisposition(Mime::DISPOSITION_INLINE);
