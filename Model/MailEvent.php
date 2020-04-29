@@ -124,7 +124,8 @@ class MailEvent
             /** @var Order|Invoice|Shipment|Creditmemo $obj */
             $obj = $templateVars[$emailType];
 
-            if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId), true) && $this->dataHelper->isEnabledAttachPdf($storeId)) {
+            if ($this->dataHelper->isEnabledAttachPdf($storeId)
+                && in_array($emailType, $this->dataHelper->getAttachPdf($storeId), true)) {
                 $this->setPdfAttachment($emailType, $message, $obj);
             }
 
