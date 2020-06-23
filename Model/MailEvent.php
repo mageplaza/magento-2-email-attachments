@@ -208,14 +208,14 @@ class MailEvent
      */
     private function setTACAttachment($message, $storeId = null)
     {
-        list($content, $ext, $mimeType) = $this->getTacFile($storeId);
+        [$content, $ext, $mimeType] = $this->getTacFile($storeId);
 
         if ($this->dataHelper->versionCompare('2.2.9')) {
             $attachment              = new Part($content);
             $attachment->type        = $mimeType;
             $attachment->encoding    = Zend_Mime::ENCODING_BASE64;
             $attachment->disposition = Zend_Mime::DISPOSITION_ATTACHMENT;
-            $attachment->filename    = __('terms_and_conditions') . '.' .$ext;
+            $attachment->filename    = __('terms_and_conditions') . '.' . $ext;
 
             $this->parts[] = $attachment;
 
@@ -227,7 +227,7 @@ class MailEvent
             $mimeType,
             Zend_Mime::DISPOSITION_ATTACHMENT,
             Zend_Mime::ENCODING_BASE64,
-            __('terms_and_conditions') . '.' .$ext
+            __('terms_and_conditions') . '.' . $ext
         );
     }
 
@@ -258,6 +258,7 @@ class MailEvent
 
     /**
      * @param null $storeId
+     *
      * @return array
      */
     private function getTacFile($storeId = null)
