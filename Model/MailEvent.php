@@ -124,13 +124,14 @@ class MailEvent
             /** @var Order|Invoice|Shipment|Creditmemo $obj */
             $obj = $templateVars[$emailType];
 
-            if (in_array($emailType, $this->dataHelper->getAttachPdf($storeId), true)) {
+            if ($this->dataHelper->isEnabledAttachPdf($storeId)
+                && in_array($emailType, $this->dataHelper->getAttachPdf($storeId), true)) {
                 $this->setPdfAttachment($emailType, $message, $obj);
             }
 
             if ($this->dataHelper->getTacFile($storeId)
                 && in_array($emailType, $this->dataHelper->getAttachTac($storeId), true)) {
-                $this->setTACAttachment($message);
+                $this->setTACAttachment($message, $storeId);
             }
 
             if ($this->dataHelper->versionCompare('2.2.9')) {
@@ -203,17 +204,18 @@ class MailEvent
 
     /**
      * @param MailMessageInterface|Zend_Mail $message
+     * @param null $storeId
      */
-    private function setTACAttachment($message)
+    private function setTACAttachment($message, $storeId = null)
     {
-        list($content, $ext, $mimeType) = $this->getTacFile();
+        [$content, $ext, $mimeType] = $this->getTacFile($storeId);
 
         if ($this->dataHelper->versionCompare('2.2.9')) {
             $attachment              = new Part($content);
             $attachment->type        = $mimeType;
             $attachment->encoding    = Zend_Mime::ENCODING_BASE64;
             $attachment->disposition = Zend_Mime::DISPOSITION_ATTACHMENT;
-            $attachment->filename    = 'terms_and_conditions.' . $ext;
+            $attachment->filename    = __('terms_and_conditions') . '.' . $ext;
 
             $this->parts[] = $attachment;
 
@@ -225,7 +227,7 @@ class MailEvent
             $mimeType,
             Zend_Mime::DISPOSITION_ATTACHMENT,
             Zend_Mime::ENCODING_BASE64,
-            'terms_and_conditions.' . $ext
+            __('terms_and_conditions') . '.' . $ext
         );
     }
 
@@ -241,6 +243,7 @@ class MailEvent
 
         $part = new Part($body);
         $part->setCharset('utf-8');
+        $part->setEncoding(Mime::ENCODING_BASE64);
         if ($this->dataHelper->versionCompare('2.3.3')) {
             $part->setEncoding(Mime::ENCODING_QUOTEDPRINTABLE);
             $part->setDisposition(Mime::DISPOSITION_INLINE);
@@ -254,12 +257,14 @@ class MailEvent
     }
 
     /**
+     * @param null $storeId
+     *
      * @return array
      */
-    private function getTacFile()
+    private function getTacFile($storeId = null)
     {
         $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
-        $tacPath        = $this->dataHelper->getTacFile();
+        $tacPath        = $this->dataHelper->getTacFile($storeId);
         $filePath       = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacPath);
         $content        = file_get_contents($filePath);
         $ext            = (string) substr($filePath, strrpos($filePath, '.') + 1);

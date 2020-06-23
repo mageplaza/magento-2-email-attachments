@@ -2,6 +2,7 @@ Invoice,Invoice
 Shipment,Shipment
 "Credit Memo","Credit Memo"
 Order,Order
+terms_and_conditions,terms_and_conditions
 "Email Attachments","Email Attachments"
 "General Configuration","General Configuration"
 Enable,Enable
