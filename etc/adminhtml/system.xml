@@ -35,10 +35,12 @@
                 </field>
                 <field id="cc_to" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CC to Emails</label>
+                    <backend_model>Mageplaza\EmailAttachments\Model\Config\Backend\Email</backend_model>
                     <comment>Comma-separated</comment>
                 </field>
                 <field id="bcc_to" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>BCC to Emails</label>
+                    <backend_model>Mageplaza\EmailAttachments\Model\Config\Backend\Email</backend_model>
                     <comment>Comma-separated</comment>
                 </field>
                 <field id="is_enabled_attach_pdf" translate="label" sortOrder="40" type="select" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
