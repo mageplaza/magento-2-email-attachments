@@ -108,4 +108,13 @@ class Data extends AbstractData
     {
         return $this->getConfigGeneral('tac_file', $store);
     }
+
+    /**
+     * @return bool
+     */
+    public function checkPdfInvoiceIsEnable()
+    {
+        return $this->_moduleManager->isEnabled('Mageplaza_PdfInvoice')
+            && $this->getConfigValue('pdfinvoice/general/enabled');
+    }
 }

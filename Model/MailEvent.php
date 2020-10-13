@@ -25,6 +25,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Mail\MailMessageInterface;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Creditmemo;
 use Magento\Sales\Model\Order\Invoice;
@@ -82,23 +83,31 @@ class MailEvent
     private $objectManager;
 
     /**
+     * @var SessionManagerInterface
+     */
+    private $coreSession;
+
+    /**
      * MailEvent constructor.
      *
      * @param Mail $mail
      * @param Data $dataHelper
      * @param Filesystem $filesystem
      * @param ObjectManagerInterface $objectManager
+     * @param SessionManagerInterface $coreSession
      */
     public function __construct(
         Mail $mail,
         Data $dataHelper,
         Filesystem $filesystem,
-        ObjectManagerInterface $objectManager
+        ObjectManagerInterface $objectManager,
+        SessionManagerInterface $coreSession
     ) {
         $this->mail          = $mail;
         $this->dataHelper    = $dataHelper;
         $this->filesystem    = $filesystem;
         $this->objectManager = $objectManager;
+        $this->coreSession   = $coreSession;
     }
 
     /**
@@ -124,9 +133,17 @@ class MailEvent
             /** @var Order|Invoice|Shipment|Creditmemo $obj */
             $obj = $templateVars[$emailType];
 
+            $attachmentPDF = null;
+            if ($this->dataHelper->checkPdfInvoiceIsEnable()) {
+                $attachmentPDF = $this->coreSession->getAttachPdf();
+                if (is_object($attachmentPDF)) {
+                    $this->parts[] = $attachmentPDF;
+                }
+            }
+
             if ($this->dataHelper->isEnabledAttachPdf($storeId)
                 && in_array($emailType, $this->dataHelper->getAttachPdf($storeId), true)) {
-                $this->setPdfAttachment($emailType, $message, $obj);
+                $this->setPdfAttachment($emailType, $message, $obj, $attachmentPDF);
             }
 
             if ($this->dataHelper->getTacFile($storeId)
@@ -169,14 +186,19 @@ class MailEvent
     }
 
     /**
-     * @param string $emailType
-     * @param MailMessageInterface|Zend_Mail $message
-     * @param Order|Invoice|Shipment|Creditmemo $obj
+     * @param $emailType
+     * @param $message
+     * @param $obj
+     * @param null $attachmentPDF
      *
      * @throws Zend_Pdf_Exception
      */
-    private function setPdfAttachment($emailType, $message, $obj)
+    private function setPdfAttachment($emailType, $message, $obj, $attachmentPDF = null)
     {
+        if (is_object($attachmentPDF)) {
+            return;
+        }
+
         $pdfModel = 'Magento\Sales\Model\Order\Pdf\\' . ucfirst($emailType);
         /** @var Zend_Pdf $pdf */
         $pdf = $this->objectManager->create($pdfModel)->getPdf([$obj]);
