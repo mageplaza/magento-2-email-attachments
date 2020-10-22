@@ -27,5 +27,10 @@
         </arguments>
         <plugin name="mageplaza_emailattachments_transport_factory" type="Mageplaza\EmailAttachments\Mail\TransportFactory"/>
     </type>
+    <type name="Mageplaza\EmailAttachments\Mail\EmailMessage">
+        <arguments>
+            <argument name="encoding" xsi:type="string">utf-8</argument>
+        </arguments>
+    </type>
     <preference for="Magento\Framework\Mail\EmailMessageInterfaceFactory" type="Mageplaza\EmailAttachments\Mail\EmailMessageFactory"/>
 </config>
