@@ -144,15 +144,18 @@ class MailEvent
             if ($this->dataHelper->isEnabledAttachPdf($storeId)
                 && in_array($emailType, $this->dataHelper->getAttachPdf($storeId), true)) {
                 $this->setPdfAttachment($emailType, $message, $obj, $attachmentPDF);
+                $attachmentPDF = true;
             }
 
             if ($this->dataHelper->getTacFile($storeId)
                 && in_array($emailType, $this->dataHelper->getAttachTac($storeId), true)) {
                 $this->setTACAttachment($message, $storeId);
+                $attachmentPDF = true;
             }
 
-            if ($this->dataHelper->versionCompare('2.2.9')) {
+            if ($this->dataHelper->versionCompare('2.2.9') && $attachmentPDF) {
                 $this->setBodyAttachment($message);
+                $this->parts = [];
             }
 
             foreach ($this->dataHelper->getCcTo($storeId) as $email) {
