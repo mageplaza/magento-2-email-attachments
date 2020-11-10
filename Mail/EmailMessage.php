@@ -89,7 +89,7 @@ class EmailMessage
         $encoding = ''
     ) {
         $this->message = new ZendMessage();
-        $mimeMessage   = new ZendMimeMessage();
+        $mimeMessage = new ZendMimeMessage();
         $mimeMessage->setParts($body->getParts());
         $this->message->setBody($mimeMessage);
         if ($encoding) {
@@ -198,7 +198,7 @@ class EmailMessage
         return $this->addressFactory->create(
             [
                 'email' => $zendSender->getEmail(),
-                'name'  => $zendSender->getName()
+                'name' => $zendSender->getName()
             ]
         );
     }
@@ -260,7 +260,7 @@ class EmailMessage
                 $this->addressFactory->create(
                     [
                         'email' => $address->getEmail(),
-                        'name'  => $address->getName()
+                        'name' => $address->getName()
                     ]
                 );
         }
