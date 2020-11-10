@@ -29,9 +29,9 @@ use Magento\Framework\Data\OptionSourceInterface;
  */
 class AttachTaC implements OptionSourceInterface
 {
-    const ORDER       = 'order';
-    const INVOICE     = 'invoice';
-    const SHIPMENT    = 'shipment';
+    const ORDER = 'order';
+    const INVOICE = 'invoice';
+    const SHIPMENT = 'shipment';
     const CREDIT_MEMO = 'creditmemo';
 
     /**
@@ -42,9 +42,9 @@ class AttachTaC implements OptionSourceInterface
     public static function getOptionArray()
     {
         return [
-            self::ORDER       => __('Order'),
-            self::INVOICE     => __('Invoice'),
-            self::SHIPMENT    => __('Shipment'),
+            self::ORDER => __('Order'),
+            self::INVOICE => __('Invoice'),
+            self::SHIPMENT => __('Shipment'),
             self::CREDIT_MEMO => __('Credit Memo')
         ];
     }

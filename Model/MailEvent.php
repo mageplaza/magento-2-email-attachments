@@ -51,9 +51,9 @@ class MailEvent
      * @var array
      */
     const MIME_TYPES = [
-        'txt'  => 'text/plain',
-        'pdf'  => 'application/pdf',
-        'doc'  => 'application/msword',
+        'txt' => 'text/plain',
+        'pdf' => 'application/pdf',
+        'doc' => 'application/msword',
         'docx' => 'application/msword',
     ];
 
@@ -103,11 +103,11 @@ class MailEvent
         ObjectManagerInterface $objectManager,
         SessionManagerInterface $coreSession
     ) {
-        $this->mail          = $mail;
-        $this->dataHelper    = $dataHelper;
-        $this->filesystem    = $filesystem;
+        $this->mail = $mail;
+        $this->dataHelper = $dataHelper;
+        $this->filesystem = $filesystem;
         $this->objectManager = $objectManager;
-        $this->coreSession   = $coreSession;
+        $this->coreSession = $coreSession;
     }
 
     /**
@@ -122,7 +122,7 @@ class MailEvent
             return;
         }
         /** @var Store|null $store */
-        $store   = isset($templateVars['store']) ? $templateVars['store'] : null;
+        $store = isset($templateVars['store']) ? $templateVars['store'] : null;
         $storeId = $store ? $store->getId() : null;
 
         if (!$this->dataHelper->isEnabled($storeId)) {
@@ -144,15 +144,18 @@ class MailEvent
             if ($this->dataHelper->isEnabledAttachPdf($storeId)
                 && in_array($emailType, $this->dataHelper->getAttachPdf($storeId), true)) {
                 $this->setPdfAttachment($emailType, $message, $obj, $attachmentPDF);
+                $attachmentPDF = true;
             }
 
             if ($this->dataHelper->getTacFile($storeId)
                 && in_array($emailType, $this->dataHelper->getAttachTac($storeId), true)) {
                 $this->setTACAttachment($message, $storeId);
+                $attachmentPDF = true;
             }
 
-            if ($this->dataHelper->versionCompare('2.2.9')) {
+            if ($this->dataHelper->versionCompare('2.2.9') && $attachmentPDF) {
                 $this->setBodyAttachment($message);
+                $this->parts = [];
             }
 
             foreach ($this->dataHelper->getCcTo($storeId) as $email) {
@@ -204,11 +207,11 @@ class MailEvent
         $pdf = $this->objectManager->create($pdfModel)->getPdf([$obj]);
 
         if ($this->dataHelper->versionCompare('2.2.9')) {
-            $attachment              = new Part($pdf->render());
-            $attachment->type        = 'application/pdf';
-            $attachment->encoding    = Zend_Mime::ENCODING_BASE64;
+            $attachment = new Part($pdf->render());
+            $attachment->type = 'application/pdf';
+            $attachment->encoding = Zend_Mime::ENCODING_BASE64;
             $attachment->disposition = Zend_Mime::DISPOSITION_ATTACHMENT;
-            $attachment->filename    = $emailType . $obj->getIncrementId() . '.pdf';
+            $attachment->filename = $emailType . $obj->getIncrementId() . '.pdf';
 
             $this->parts[] = $attachment;
 
@@ -233,11 +236,11 @@ class MailEvent
         [$content, $ext, $mimeType] = $this->getTacFile($storeId);
 
         if ($this->dataHelper->versionCompare('2.2.9')) {
-            $attachment              = new Part($content);
-            $attachment->type        = $mimeType;
-            $attachment->encoding    = Zend_Mime::ENCODING_BASE64;
+            $attachment = new Part($content);
+            $attachment->type = $mimeType;
+            $attachment->encoding = Zend_Mime::ENCODING_BASE64;
             $attachment->disposition = Zend_Mime::DISPOSITION_ATTACHMENT;
-            $attachment->filename    = __('terms_and_conditions') . '.' . $ext;
+            $attachment->filename = __('terms_and_conditions') . '.' . $ext;
 
             $this->parts[] = $attachment;
 
@@ -286,10 +289,10 @@ class MailEvent
     private function getTacFile($storeId = null)
     {
         $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
-        $tacPath        = $this->dataHelper->getTacFile($storeId);
-        $filePath       = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacPath);
-        $content        = file_get_contents($filePath);
-        $ext            = (string) substr($filePath, strrpos($filePath, '.') + 1);
+        $tacPath = $this->dataHelper->getTacFile($storeId);
+        $filePath = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacPath);
+        $content = file_get_contents($filePath);
+        $ext = (string)substr($filePath, strrpos($filePath, '.') + 1);
 
         return [$content, $ext, self::MIME_TYPES[$ext]];
     }

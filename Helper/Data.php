@@ -62,7 +62,7 @@ class Data extends AbstractData
      */
     public function isEnabledAttachPdf($store = null)
     {
-        return (bool) $this->getConfigGeneral('is_enabled_attach_pdf', $store);
+        return (bool)$this->getConfigGeneral('is_enabled_attach_pdf', $store);
     }
 
     /**
@@ -84,7 +84,7 @@ class Data extends AbstractData
      */
     public function isEnabledAttachTac($store = null)
     {
-        return (bool) $this->getConfigGeneral('is_enabled_attach_tac', $store);
+        return (bool)$this->getConfigGeneral('is_enabled_attach_tac', $store);
     }
 
     /**

@@ -29,8 +29,8 @@ use Magento\Framework\Data\OptionSourceInterface;
  */
 class AttachPdf implements OptionSourceInterface
 {
-    const INVOICE     = 'invoice';
-    const SHIPMENT    = 'shipment';
+    const INVOICE = 'invoice';
+    const SHIPMENT = 'shipment';
     const CREDIT_MEMO = 'creditmemo';
 
     /**
@@ -41,8 +41,8 @@ class AttachPdf implements OptionSourceInterface
     public static function getOptionArray()
     {
         return [
-            self::INVOICE     => __('Invoice'),
-            self::SHIPMENT    => __('Shipment'),
+            self::INVOICE => __('Invoice'),
+            self::SHIPMENT => __('Shipment'),
             self::CREDIT_MEMO => __('Credit Memo')
         ];
     }
