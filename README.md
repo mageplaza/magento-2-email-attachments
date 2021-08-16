@@ -42,11 +42,20 @@ Install via composer (recommend)
 
 Run the following command in Magento 2 root folder:
 
+With Marketing Automation (recommend):
+```
+composer require mageplaza/module-email-attachments mageplaza/module-smtp
+php bin/magento setup:upgrade
+php bin/magento setup:static-content:deploy
+```
+
+Without Marketing Automation:
 ```
 composer require mageplaza/module-email-attachments
 php bin/magento setup:upgrade
 php bin/magento setup:static-content:deploy
 ```
+
 
 ## 4. Mageplaza Email Attachments Highlight Features
 
@@ -156,6 +165,17 @@ Login to the `Magento Admin`, navigate to `Store > Configuration > Mageplaza > E
 - [Magento 2 Layered Navigation](https://github.com/mageplaza/magento-2-ajax-layered-navigation)
 - [Magento 2 security module](https://github.com/mageplaza/magento-2-security)
 
+**Get more [Magento 2 extensions on Marketplace](https://marketplace.magento.com/partner/Mageplaza):**
+- [Magento 2 Customer Approval](https://marketplace.magento.com/mageplaza-module-customer-approval.html)
+- [Magento 2 Static Block](https://marketplace.magento.com/mageplaza-module-better-static-block.html)
+- [Magento 2 Social Share](https://marketplace.magento.com/mageplaza-module-social-share.html)
+- [Magento 2 Multi Flat Rates](https://marketplace.magento.com/mageplaza-module-multi-flat-rates.html)
+- [Magento 2 Share Cart](https://marketplace.magento.com/mageplaza-module-share-cart.html)
+- [Magento 2 Instagram Feed](https://marketplace.magento.com/mageplaza-module-instagram-feed.html)
+- [Magento 2 Same Order Number](https://marketplace.magento.com/mageplaza-module-same-order-number.html)
+- [Magento 2 Two-Factor Authentication](https://marketplace.magento.com/mageplaza-module-two-factors-authentication.html)
+- [Magento 2 Quick Cart](https://marketplace.magento.com/mageplaza-module-quick-cart.html)
+- [Magento 2 Order History](https://marketplace.magento.com/mageplaza-module-order-history.html)
 
 
 
