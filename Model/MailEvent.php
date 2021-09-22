@@ -147,7 +147,7 @@ class MailEvent
                 $attachmentPDF = true;
             }
 
-            if ($this->dataHelper->getTacFile($storeId)
+            if (count($this->dataHelper->getTacFiles($storeId))
                 && in_array($emailType, $this->dataHelper->getAttachTac($storeId), true)) {
                 $this->setTACAttachment($message, $storeId);
                 $attachmentPDF = true;
@@ -233,27 +233,29 @@ class MailEvent
      */
     private function setTACAttachment($message, $storeId = null)
     {
-        [$content, $ext, $mimeType] = $this->getTacFile($storeId);
+        $attachments = $this->getTacFiles($storeId);
 
-        if ($this->dataHelper->versionCompare('2.2.9')) {
-            $attachment = new Part($content);
-            $attachment->type = $mimeType;
-            $attachment->encoding = Zend_Mime::ENCODING_BASE64;
-            $attachment->disposition = Zend_Mime::DISPOSITION_ATTACHMENT;
-            $attachment->filename = __('terms_and_conditions') . '.' . $ext;
+        foreach($attachments as [$content, $ext, $mimeType, $filename]) {
+            if ($this->dataHelper->versionCompare('2.2.9')) {
+                $attachment = new Part($content);
+                $attachment->type = $mimeType;
+                $attachment->encoding = Zend_Mime::ENCODING_BASE64;
+                $attachment->disposition = Zend_Mime::DISPOSITION_ATTACHMENT;
+                $attachment->filename = $filename;
 
-            $this->parts[] = $attachment;
+                $this->parts[] = $attachment;
 
-            return;
+                continue;
+            }
+
+            $message->createAttachment(
+                $content,
+                $mimeType,
+                Zend_Mime::DISPOSITION_ATTACHMENT,
+                Zend_Mime::ENCODING_BASE64,
+                $filename
+            );
         }
-
-        $message->createAttachment(
-            $content,
-            $mimeType,
-            Zend_Mime::DISPOSITION_ATTACHMENT,
-            Zend_Mime::ENCODING_BASE64,
-            __('terms_and_conditions') . '.' . $ext
-        );
     }
 
     /**
@@ -286,14 +288,28 @@ class MailEvent
      *
      * @return array
      */
-    private function getTacFile($storeId = null)
+    private function getTacFiles($storeId = null)
     {
-        $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
-        $tacPath = $this->dataHelper->getTacFile($storeId);
-        $filePath = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacPath);
-        $content = file_get_contents($filePath);
-        $ext = (string)substr($filePath, strrpos($filePath, '.') + 1);
+        $attachments = [];
 
-        return [$content, $ext, self::MIME_TYPES[$ext]];
+        $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        $tacPaths = $this->dataHelper->getTacFiles($storeId);
+        foreach ($tacPaths as $index => $tacPath) {
+            $filePath = $mediaDirectory->getAbsolutePath('mageplaza/email_attachments/' . $tacPath);
+            if (file_exists($filePath)) {
+                $content = file_get_contents($filePath);
+                $ext = (string)substr($filePath, strrpos($filePath, '.') + 1);
+
+                if ($fileName = $this->dataHelper->getTacFileName($storeId, $index)) {
+                    $fileName .= '.' . $ext;
+                } else {
+                    $fileName = basename($filePath);
+                }
+
+                $attachments[$index] = [$content, $ext, self::MIME_TYPES[$ext], $fileName];
+            }
+        }
+
+        return $attachments;
     }
 }

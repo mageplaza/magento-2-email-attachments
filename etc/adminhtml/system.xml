@@ -71,11 +71,77 @@
                         <field id="is_enabled_attach_tac">1</field>
                     </depends>
                 </field>
-                <field id="tac_file" translate="label comment" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Terms and Conditions file</label>
+                <field id="tac_file_1" translate="label comment" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions file #1</label>
                     <backend_model>Mageplaza\EmailAttachments\Model\Config\Backend\TaCFile</backend_model>
                     <comment>Allowed upload file types: .pdf, .doc, .docx, .txt</comment>
                     <base_url type="media" scope_info="1">mageplaza/email_attachments</base_url>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_filename_1" translate="label" sortOrder="90" type="text" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Terms and Conditions filename #1</label>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_file_2" translate="label comment" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions file #2</label>
+                    <backend_model>Mageplaza\EmailAttachments\Model\Config\Backend\TaCFile</backend_model>
+                    <comment>Allowed upload file types: .pdf, .doc, .docx, .txt</comment>
+                    <base_url type="media" scope_info="1">mageplaza/email_attachments</base_url>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_filename_2" translate="label" sortOrder="110" type="text" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Terms and Conditions filename #2</label>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_file_3" translate="label comment" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions file #3</label>
+                    <backend_model>Mageplaza\EmailAttachments\Model\Config\Backend\TaCFile</backend_model>
+                    <comment>Allowed upload file types: .pdf, .doc, .docx, .txt</comment>
+                    <base_url type="media" scope_info="1">mageplaza/email_attachments</base_url>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_filename_3" translate="label" sortOrder="130" type="text" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Terms and Conditions filename #3</label>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_file_4" translate="label comment" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions file #4</label>
+                    <backend_model>Mageplaza\EmailAttachments\Model\Config\Backend\TaCFile</backend_model>
+                    <comment>Allowed upload file types: .pdf, .doc, .docx, .txt</comment>
+                    <base_url type="media" scope_info="1">mageplaza/email_attachments</base_url>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_filename_4" translate="label" sortOrder="150" type="text" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Terms and Conditions filename #4</label>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_file_5" translate="label comment" type="Magento\Config\Block\System\Config\Form\Field\File" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions file #5</label>
+                    <backend_model>Mageplaza\EmailAttachments\Model\Config\Backend\TaCFile</backend_model>
+                    <comment>Allowed upload file types: .pdf, .doc, .docx, .txt</comment>
+                    <base_url type="media" scope_info="1">mageplaza/email_attachments</base_url>
+                    <depends>
+                        <field id="is_enabled_attach_tac">1</field>
+                    </depends>
+                </field>
+                <field id="tac_filename_5" translate="label" sortOrder="170" type="text" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Terms and Conditions filename #5</label>
                     <depends>
                         <field id="is_enabled_attach_tac">1</field>
                     </depends>

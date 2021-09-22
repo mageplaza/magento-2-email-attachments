@@ -31,6 +31,8 @@ class Data extends AbstractData
 {
     const CONFIG_MODULE_PATH = 'mp_email_attachments';
 
+    const CONFIG_TAC_FILES_COUNT = 5;
+
     /**
      * @param null $store
      *
@@ -104,9 +106,37 @@ class Data extends AbstractData
      *
      * @return string
      */
-    public function getTacFile($store = null)
+    public function getTacFile($store = null, $index = 1)
     {
-        return $this->getConfigGeneral('tac_file', $store);
+        return $this->getConfigGeneral('tac_file_' . $index, $store);
+    }
+
+    /**
+     * @param null $store
+     *
+     * @return string
+     */
+    public function getTacFileName($store = null, int $index = 1)
+    {
+        return $this->getConfigGeneral('tac_filename_' . $index, $store);
+    }
+
+    /**
+     * @param null $store
+     *
+     * @return array
+     */
+    public function getTacFiles($store = null)
+    {
+        $files = [];
+        for ($i = 1; $i <= self::CONFIG_TAC_FILES_COUNT; $i++) {
+            $configValue = $this->getConfigGeneral('tac_file_' . $i, $store);
+            if (!empty($configValue)) {
+                $files[$i] = $configValue;
+            }
+        }
+
+        return $files;
     }
 
     /**
