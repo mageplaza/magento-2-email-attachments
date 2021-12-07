@@ -86,7 +86,7 @@ class EmailMessage
         array $replyTo = null,
         $sender = null,
         $subject = '',
-        $encoding = ''
+        ?string $encoding = 'utf-8'
     ) {
         $this->message = new ZendMessage();
         $mimeMessage = new ZendMimeMessage();
