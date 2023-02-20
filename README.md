@@ -1,6 +1,8 @@
 # Magento 2 Email Attachments extension
 
-[Magento 2 Email Attachments extension](http://www.mageplaza.com/magento-2-email-attachments/) enable the administrator to attach necessary documents such as PDF Invoice, Shipment, Credit Memo as well as add Terms and Conditions to sales emails. With this extension, customers are able to follow all information during the purchase process by checking emails from the store.
+> **(Update) 2023-02-20**: This project will be marked as a paid item and no longer be maintained as free. For further updates and technical support, please follow [Magento 2 Email Attachments](http://www.mageplaza.com/magento-2-email-attachments/) for more information. We understand that this change might create inconvenience for our users. However, this is to ensure that the module will be updated with more useful features to support Magento 2 stores better. If you have any concerns or ideas about any features you would like to see, don’t hesitate to [contact us](https://www.mageplaza.com/support/) and leave a request.
+
+Magento 2 Email Attachments extension enable the administrator to attach necessary documents such as PDF Invoice, Shipment, Credit Memo as well as add Terms and Conditions to sales emails. With this extension, customers are able to follow all information during the purchase process by checking emails from the store.
 
 [![Latest Stable Version](https://poser.pugx.org/mageplaza/module-email-attachments/v/stable)](https://packagist.org/packages/mageplaza/module-email-attachments)
 [![Total Downloads](https://poser.pugx.org/mageplaza/module-email-attachments/downloads)](https://packagist.org/packages/mageplaza/module-email-attachments)
