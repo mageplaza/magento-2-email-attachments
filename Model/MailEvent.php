@@ -128,6 +128,8 @@ class MailEvent
         if (!$this->dataHelper->isEnabled($storeId)) {
             return;
         }
+        
+        $this->parts = [];
 
         if ($emailType = $this->getEmailType($templateVars)) {
             /** @var Order|Invoice|Shipment|Creditmemo $obj */
